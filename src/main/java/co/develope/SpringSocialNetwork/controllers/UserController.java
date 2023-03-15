@@ -26,6 +26,11 @@ public class UserController {
 
     }
 
+    @GetMapping("/list")
+    public List<User> GetUserList(){
+        return UserList;
+    }
+
     @GetMapping("/details")
     public String UserDetails(){
         return userService.UserDetails();
