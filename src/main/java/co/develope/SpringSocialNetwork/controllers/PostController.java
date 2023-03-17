@@ -15,7 +15,6 @@ public class PostController {
     @Autowired
     PostRepository postRepository;
 
-    /** vanno collegati i post all'user (user non ancora disponibile) **/
 
     @PostMapping("/add")
     public Post createPost(@RequestBody Post post){
