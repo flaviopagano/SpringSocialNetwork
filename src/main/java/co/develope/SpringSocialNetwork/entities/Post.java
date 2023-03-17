@@ -11,8 +11,7 @@ public class Post {
   @GeneratedValue
   private int id;
   private String text;
-  //come contare i post di un user?
-  //private static int postCount; //come funziona con spring?
+
 
 
     public Post() {
