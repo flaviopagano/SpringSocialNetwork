@@ -2,10 +2,15 @@ package co.develope.SpringSocialNetwork.entities;
 
 import javax.persistence.*;
 
-
+@Entity
+@Table(name = "comments")
 public class Comment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+
+    @Column(nullable = false)
     private String description;
 
     public String getId() {
