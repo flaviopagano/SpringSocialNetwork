@@ -22,13 +22,6 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping ("/create")
-    public String createUser(@RequestBody User user){
-        User newUser = new User();
-        UserList.add(newUser);
-      return newUser.toString();
-
-    }
 
     /**
      * Ho rifatto il metodo con l'implementazione del database usando UserRepository
@@ -39,16 +32,12 @@ public class UserController {
      * @return e ho lasciato il return dell'oggetto user con il metodo toString().
      */
     @PostMapping ("/create")
-    public String createUserWithDb(@RequestBody User user){
+    public String createUser(@RequestBody User user){
         userRepository.save(user);
         return user.toString();
 
     }
 
-    @GetMapping("/list")
-    public List<User> GetUserList(){
-        return UserList;
-    }
 
     /**
      * Ho fatto la stessa cosa con il metodo GetUser. Ho modificato il return.
@@ -56,7 +45,7 @@ public class UserController {
      * user dal database
      */
     @GetMapping("/list")
-    public List<User> GetUserListWithDb(){
+    public List<User> GetUserList(){
         return userRepository.findAll();
     }
 
