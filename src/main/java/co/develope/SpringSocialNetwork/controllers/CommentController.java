@@ -24,9 +24,7 @@ public class CommentController {
     @PostMapping("/create")
     public ResponseEntity createComment(@RequestBody CommentDTO comment){
         try {
-            commentRepository.save(new Comment(comment.getText(),
-                    commentService.getUserFromCommentDTO(comment),
-                    commentService.getPostFromCommentDTO(comment)));
+            commentRepository.save(commentService.getCommentFromCommentDTO(comment));
             return ResponseEntity.status(HttpStatus.CREATED).body("Comment created!");
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

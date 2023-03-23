@@ -1,6 +1,7 @@
 package co.develope.SpringSocialNetwork.services;
 
 import co.develope.SpringSocialNetwork.DTO.CommentDTO;
+import co.develope.SpringSocialNetwork.entities.Comment;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
@@ -20,21 +21,17 @@ public class CommentService {
     @Autowired
     PostRepository postRepository;
 
-    public User getUserFromCommentDTO(CommentDTO comment) throws UserNotFoundException {
+    public Comment getCommentFromCommentDTO(CommentDTO comment) throws UserNotFoundException, PostNotFoundException{
         Optional<User> myUser = userRepository.findByUsername(comment.getUsername());
+        Optional<Post> myPost = postRepository.findById(comment.getPostId());
         if(myUser.isPresent()){
-            return myUser.get();
+            if(myPost.isPresent()){
+                return new Comment(comment.getText(), myUser.get(), myPost.get());
+            }else{
+                throw new PostNotFoundException();
+            }
         }else{
             throw new UserNotFoundException();
-        }
-    }
-
-    public Post getPostFromCommentDTO(CommentDTO comment) throws PostNotFoundException {
-        Optional<Post> myPost = postRepository.findById(comment.getPostId());
-        if(myPost.isPresent()){
-            return myPost.get();
-        }else{
-            throw new PostNotFoundException();
         }
     }
 
