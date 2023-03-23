@@ -1,7 +1,6 @@
 package co.develope.SpringSocialNetwork.entities;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +16,7 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String surname;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -40,11 +39,11 @@ public class User extends BaseEntity{
 
     public User(){}
 
-    public User(String name, String surname, String nickname, String email, String password) {
+    public User(String name, String surname, String username, String email, String password) {
         super();
         this.name = name;
         this.surname = surname;
-        this.username = nickname;
+        this.username = username;
         this.email = email;
         this.password = password;
     }

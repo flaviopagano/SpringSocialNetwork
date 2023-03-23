@@ -1,20 +1,21 @@
 package co.develope.SpringSocialNetwork.controllers;
 
+import co.develope.SpringSocialNetwork.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
+import co.develope.SpringSocialNetwork.exceptions.EmailAlreadyPresentException;
+import co.develope.SpringSocialNetwork.exceptions.UsernameAlreadyPresentException;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
-
-    List<User> UserList = new ArrayList<>();
 
     @Autowired
     UserService userService;
@@ -32,10 +33,15 @@ public class UserController {
      * @return e ho lasciato il return dell'oggetto user con il metodo toString().
      */
     @PostMapping ("/create")
-    public String createUser(@RequestBody User user){
-        userRepository.save(user);
-        return user.toString();
-
+    public ResponseEntity createUser(@RequestBody UserDTO user){
+        try {
+            userRepository.save(userService.getUserFromUserDTO(user));
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully!");
+        } catch (UsernameAlreadyPresentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (EmailAlreadyPresentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
 
@@ -45,14 +51,8 @@ public class UserController {
      * user dal database
      */
     @GetMapping("/list")
-    public List<User> GetUserList(){
+    public List<User> getUserList(){
         return userRepository.findAll();
-    }
-
-
-    @GetMapping("/details")
-    public String UserDetails(){
-        return userService.UserDetails();
     }
 
 }

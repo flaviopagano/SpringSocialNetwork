@@ -4,7 +4,15 @@ public class CommentDTO {
 
     private String text;
     private String username;
-    private String postId;
+    private int postId;
+
+    public CommentDTO(){}
+
+    public CommentDTO(String text, String username, int postId) {
+        this.text = text;
+        this.username = username;
+        this.postId = postId;
+    }
 
     public String getText() {
         return text;
@@ -22,11 +30,11 @@ public class CommentDTO {
         this.username = username;
     }
 
-    public String getPostId() {
+    public int getPostId() {
         return postId;
     }
 
-    public void setPostId(String postId) {
+    public void setPostId(int postId) {
         this.postId = postId;
     }
 }
