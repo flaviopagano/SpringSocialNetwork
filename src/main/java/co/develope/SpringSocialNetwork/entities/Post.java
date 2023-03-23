@@ -1,42 +1,62 @@
 package co.develope.SpringSocialNetwork.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class Post {
-
-  @Id
-  @GeneratedValue
-  private int id;
+@Table(name = "posts")
+public class Post extends BaseEntity {
   private String text;
 
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User userWhoPosts;
 
+  @OneToMany
+  private List<Comment> comments = new ArrayList<>();
 
-    public Post() {
-    }
+  @OneToMany
+  private List<Reaction> reactions = new ArrayList<>();
 
-    public Post(int id, String text) {
-        this.id = id;
-        this.text = text;
+  public Post(){}
 
-    }
+  public Post(String text, User userWhoPosts) {
+      super();
+      this.text = text;
+      this.userWhoPosts = userWhoPosts;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public String getText() {
+      return text;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setText(String text) {
+      this.text = text;
+  }
 
-    public String getText() {
-        return text;
-    }
+  public User getUserWhoPosts() {
+      return userWhoPosts;
+  }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+  public void setUserWhoPosts(User userWhoPosts) {
+      this.userWhoPosts = userWhoPosts;
+  }
+
+  public List<Comment> getComments() {
+      return comments;
+  }
+
+  public void setComments(List<Comment> comments) {
+      this.comments = comments;
+  }
+
+  public List<Reaction> getReactions() {
+      return reactions;
+  }
+
+  public void setReactions(List<Reaction> reactions) {
+      this.reactions = reactions;
+  }
 
 }

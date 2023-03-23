@@ -4,21 +4,25 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "comments")
-public class Comment {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-
+public class  Comment extends BaseEntity{
     @Column(nullable = false)
     private String description;
 
-    public String getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userWhoComments;
 
-    public void setId(String id) {
-        this.id = id;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post postToComment;
+
+    public Comment(){}
+
+    public Comment(String description, User userWhoComments, Post postToComment) {
+        super();
+        this.description = description;
+        this.userWhoComments = userWhoComments;
+        this.postToComment = postToComment;
     }
 
     public String getDescription() {
@@ -28,4 +32,21 @@ public class Comment {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public User getUserWhoComments() {
+        return userWhoComments;
+    }
+
+    public void setUserWhoComments(User userWhoComments) {
+        this.userWhoComments = userWhoComments;
+    }
+
+    public Post getPostToComment() {
+        return postToComment;
+    }
+
+    public void setPostToComment(Post postToComment) {
+        this.postToComment = postToComment;
+    }
+
 }
