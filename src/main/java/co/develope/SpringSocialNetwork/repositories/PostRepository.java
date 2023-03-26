@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer> {
 
+
+    /** ricerca per query solo del testo dei post**/
     @Query(value = "SELECT posts.text FROM posts WHERE user_id = ?1", nativeQuery = true)
     List<String> findByUser_id(int user_id);
 
