@@ -1,7 +1,6 @@
 package co.develope.SpringSocialNetwork.controllers;
 
-import co.develope.SpringSocialNetwork.DTO.CommentDTO;
-import co.develope.SpringSocialNetwork.entities.Comment;
+import co.develope.SpringSocialNetwork.entities.DTO.CommentDTO;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.CommentRepository;

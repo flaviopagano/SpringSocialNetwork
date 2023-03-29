@@ -1,6 +1,6 @@
 package co.develope.SpringSocialNetwork.services;
 
-import co.develope.SpringSocialNetwork.DTO.UserDTO;
+import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.EmailAlreadyPresentException;
 import co.develope.SpringSocialNetwork.exceptions.UsernameAlreadyPresentException;

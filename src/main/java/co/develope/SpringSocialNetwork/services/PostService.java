@@ -1,10 +1,9 @@
 package co.develope.SpringSocialNetwork.services;
 
-import co.develope.SpringSocialNetwork.DTO.PostDTO;
+import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

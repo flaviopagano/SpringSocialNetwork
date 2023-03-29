@@ -1,4 +1,4 @@
-package co.develope.SpringSocialNetwork.entities.enums;
+package co.develope.SpringSocialNetwork.enums;
 
 public enum ReactionType {
     LOVING,

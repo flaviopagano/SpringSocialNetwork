@@ -1,6 +1,6 @@
 package co.develope.SpringSocialNetwork.entities;
 
-import co.develope.SpringSocialNetwork.entities.enums.ReactionType;
+import co.develope.SpringSocialNetwork.enums.ReactionType;
 
 import javax.persistence.*;
 
