@@ -1,6 +1,7 @@
 package co.develope.SpringSocialNetwork.entities;
 
 import co.develope.SpringSocialNetwork.enums.ReactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ public class Reaction extends BaseEntity{
     private ReactionType reactionType;
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post postToReact;
     @ManyToOne
     @JoinColumn(name = "user_id")

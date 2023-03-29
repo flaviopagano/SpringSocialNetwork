@@ -1,5 +1,7 @@
 package co.develope.SpringSocialNetwork.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class  Comment extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post postToComment;
 
     public Comment(){}

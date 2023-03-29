@@ -1,5 +1,7 @@
 package co.develope.SpringSocialNetwork.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,9 +31,11 @@ public class User extends BaseEntity{
     List<Post> posts = new ArrayList<>();
 
     @OneToMany
+    @JsonIgnore
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany
+    @JsonIgnore
     List<Reaction> reactions = new ArrayList<>();
 
     @OneToMany
