@@ -1,5 +1,7 @@
 package co.develope.SpringSocialNetwork.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ public class Post extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @JsonIgnore
   private User userWhoPosts;
 
   @OneToMany

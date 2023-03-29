@@ -1,6 +1,6 @@
 package co.develope.SpringSocialNetwork.services;
 
-import co.develope.SpringSocialNetwork.DTO.CommentDTO;
+import co.develope.SpringSocialNetwork.entities.DTO.CommentDTO;
 import co.develope.SpringSocialNetwork.entities.Comment;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.User;

@@ -1,17 +1,14 @@
-package co.develope.SpringSocialNetwork.DTO;
+package co.develope.SpringSocialNetwork.entities.DTO;
 
-public class CommentDTO {
-
+public class PostDTO {
     private String text;
     private String username;
-    private int postId;
 
-    public CommentDTO(){}
+    public PostDTO(){}
 
-    public CommentDTO(String text, String username, int postId) {
+    public PostDTO(String text, String username) {
         this.text = text;
         this.username = username;
-        this.postId = postId;
     }
 
     public String getText() {
@@ -30,11 +27,4 @@ public class CommentDTO {
         this.username = username;
     }
 
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
 }
