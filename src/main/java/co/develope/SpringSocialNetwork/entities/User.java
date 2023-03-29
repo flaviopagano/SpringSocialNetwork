@@ -1,44 +1,64 @@
 package co.develope.SpringSocialNetwork.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-public class User {
+@Table(name = "users")
+public class User extends BaseEntity{
 
-    @Id
-    @GeneratedValue
-    private int id;
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String surname;
-    private String nickname;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
-    public User() {
+    @OneToMany
+    List<Post> posts = new ArrayList<>();
 
+    @OneToMany
+    List<Comment> comments = new ArrayList<>();
+
+    @OneToMany
+    List<Reaction> reactions = new ArrayList<>();
+
+    @OneToMany
+    Set<User> friendList = new HashSet<>();
+
+    public User(){}
+
+    public User(String name, String surname, String username, String email, String password) {
+        super();
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
-    public User(int id, String name, String surname) {
-        this.id = id;
+    /*public User(String id, String name, String surname) {
+        super.setId(id);
         this.name = name;
         this.surname = surname;
     }
 
     public User(String nickname, String email, String password) {
-        this.nickname = nickname;
+        this.username = nickname;
         this.email = email;
         this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -56,12 +76,12 @@ public class User {
         this.surname = surname;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setUsername(String nickname) {
+        this.username = nickname;
     }
 
     public String getEmail() {
@@ -80,13 +100,36 @@ public class User {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", nickname='" + nickname + '\'' +
-                '}';
+    public List<Post> getPosts() {
+        return posts;
     }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
+    }
+
+    public Set<User> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(Set<User> friendList) {
+        this.friendList = friendList;
+    }
+
 }

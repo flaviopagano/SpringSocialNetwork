@@ -1,0 +1,62 @@
+package co.develope.SpringSocialNetwork.entities;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "posts")
+public class Post extends BaseEntity {
+  private String text;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User userWhoPosts;
+
+  @OneToMany
+  private List<Comment> comments = new ArrayList<>();
+
+  @OneToMany
+  private List<Reaction> reactions = new ArrayList<>();
+
+  public Post(){}
+
+  public Post(String text, User userWhoPosts) {
+      super();
+      this.text = text;
+      this.userWhoPosts = userWhoPosts;
+  }
+
+  public String getText() {
+      return text;
+  }
+
+  public void setText(String text) {
+      this.text = text;
+  }
+
+  public User getUserWhoPosts() {
+      return userWhoPosts;
+  }
+
+  public void setUserWhoPosts(User userWhoPosts) {
+      this.userWhoPosts = userWhoPosts;
+  }
+
+  public List<Comment> getComments() {
+      return comments;
+  }
+
+  public void setComments(List<Comment> comments) {
+      this.comments = comments;
+  }
+
+  public List<Reaction> getReactions() {
+      return reactions;
+  }
+
+  public void setReactions(List<Reaction> reactions) {
+      this.reactions = reactions;
+  }
+
+}
