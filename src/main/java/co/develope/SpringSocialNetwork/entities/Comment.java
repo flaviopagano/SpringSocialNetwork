@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "comments")
 public class  Comment extends BaseEntity{
+
     @Column(nullable = false)
     private String description;
 
@@ -51,5 +52,4 @@ public class  Comment extends BaseEntity{
     public void setPostToComment(Post postToComment) {
         this.postToComment = postToComment;
     }
-
 }
