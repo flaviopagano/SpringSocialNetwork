@@ -34,7 +34,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/all-by-id")
+    @GetMapping("/find-all-by-id")
     public List<String> getAllUserPosts(@RequestParam Integer userId) throws IdNotFoundException {
         List<String> empty = new ArrayList<>();
         try {
