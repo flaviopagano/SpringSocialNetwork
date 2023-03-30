@@ -52,5 +52,4 @@ public class  Comment extends BaseEntity{
     public void setPostToComment(Post postToComment) {
         this.postToComment = postToComment;
     }
-
 }
