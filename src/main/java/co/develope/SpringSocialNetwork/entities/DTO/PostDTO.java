@@ -11,6 +11,10 @@ public class PostDTO {
         this.username = username;
     }
 
+    public PostDTO(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }

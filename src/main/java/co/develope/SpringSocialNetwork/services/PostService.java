@@ -48,7 +48,6 @@ public class PostService {
         }
     }
 
-
     public ResponseEntity deletePostById(Integer id){
         Optional<Post> myPost = postRepository.findById(id);
         if(myPost.isPresent()){
@@ -58,6 +57,16 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post has not been found");
     }
 
+    public ResponseEntity editPostById(Integer postId, PostDTO postDTO){
+        Optional<Post> myPost = postRepository.findById(postId);
+        if(myPost.isPresent()){
+            Post post = myPost.get();
+            post.setText(postDTO.getText());
+            postRepository.save(post);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("The post has been edited");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post has not been found");
+    }
 
 
 

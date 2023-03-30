@@ -24,8 +24,6 @@ public class PostController {
     @Autowired
     PostService postService;
 
-
-
     @PostMapping("/create")
     public ResponseEntity createPost(@RequestBody PostDTO post){
         try {
@@ -36,7 +34,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/allPosts-by-user-id")
+    @GetMapping("/all-by-id")
     public List<String> getAllUserPosts(@RequestParam Integer userId) throws IdNotFoundException {
         List<String> empty = new ArrayList<>();
         try {
@@ -46,10 +44,13 @@ public class PostController {
         }
         return empty;
     }
-
     @DeleteMapping("/delete")
     public ResponseEntity deletePost(@RequestParam Integer postId){
         return postService.deletePostById(postId);
+    }
+    @PutMapping("/edit")
+    public ResponseEntity editPost(@RequestParam Integer postId, @RequestBody PostDTO postDTO){
+        return postService.editPostById(postId,postDTO);
     }
 
 
