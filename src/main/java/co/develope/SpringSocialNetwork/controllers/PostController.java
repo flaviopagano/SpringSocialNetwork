@@ -36,7 +36,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/allPosts-by-id")
+    @GetMapping("/allPosts-by-user-id")
     public List<String> getAllUserPosts(@RequestParam Integer userId) throws IdNotFoundException {
         List<String> empty = new ArrayList<>();
         try {
@@ -47,6 +47,10 @@ public class PostController {
         return empty;
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity deletePost(@RequestParam Integer postId){
+        return postService.deletePostById(postId);
+    }
 
 
 }

@@ -20,4 +20,5 @@ public interface PostRepository extends JpaRepository<Post,Integer> {
             "WHERE user_id = ?1", nativeQuery = true)
     List<String> findAllPostsByUserId(int user_id);
 
+
 }
