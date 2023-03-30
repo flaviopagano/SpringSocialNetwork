@@ -13,13 +13,14 @@ public class Post extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  @JsonIgnore
   private User userWhoPosts;
 
   @OneToMany
+  @JsonIgnore
   private List<Comment> comments = new ArrayList<>();
 
   @OneToMany
+  @JsonIgnore
   private List<Reaction> reactions = new ArrayList<>();
 
   public Post(){}

@@ -21,7 +21,7 @@ public class PostService {
         if(myUser.isPresent()){
             return new Post(post.getText(),myUser.get());
         }else{
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User with username: '" + post.getUsername() + "' not found");
         }
     }
 

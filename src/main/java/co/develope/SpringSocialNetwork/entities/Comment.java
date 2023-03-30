@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "comments")
 public class  Comment extends BaseEntity{
+
     @Column(nullable = false)
     private String description;
 

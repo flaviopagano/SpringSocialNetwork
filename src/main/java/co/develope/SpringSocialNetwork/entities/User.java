@@ -28,6 +28,7 @@ public class User extends BaseEntity{
     private String password;
 
     @OneToMany
+    @JsonIgnore
     List<Post> posts = new ArrayList<>();
 
     @OneToMany
@@ -39,6 +40,7 @@ public class User extends BaseEntity{
     List<Reaction> reactions = new ArrayList<>();
 
     @OneToMany
+    @JsonIgnore
     Set<User> friendList = new HashSet<>();
 
     public User(){}

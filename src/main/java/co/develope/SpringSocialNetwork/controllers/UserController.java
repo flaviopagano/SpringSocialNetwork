@@ -50,7 +50,7 @@ public class UserController {
      * @return nel return ci sara l'oggetto userRepository che richiama il metodo findAll per prendere tutti gli
      * user dal database
      */
-    @GetMapping("/list")
+    @GetMapping
     public List<User> getUserList(){
         return userRepository.findAll();
     }

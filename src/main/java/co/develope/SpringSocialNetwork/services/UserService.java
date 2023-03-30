@@ -17,7 +17,7 @@ public class UserService {
     public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException {
 
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
-            throw new UsernameAlreadyPresentException();
+            throw new UsernameAlreadyPresentException("Username: '" + user.getUsername() + "' already present");
         }else{
             if(userRepository.findByEmail(user.getEmail()).isPresent()){
                 throw new EmailAlreadyPresentException();
