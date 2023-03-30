@@ -2,6 +2,7 @@ package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
 import co.develope.SpringSocialNetwork.entities.Post;
+import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.services.PostService;
@@ -10,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
@@ -20,6 +23,8 @@ public class PostController {
 
     @Autowired
     PostService postService;
+
+
 
     @PostMapping("/create")
     public ResponseEntity createPost(@RequestBody PostDTO post){
@@ -31,15 +36,17 @@ public class PostController {
         }
     }
 
-    @GetMapping
-    public List<Post> getPosts(){
-        return postRepository.findAll();
+    @GetMapping("/allPosts-by-id")
+    public List<String> getAllUserPosts(@RequestParam Integer userId) throws IdNotFoundException {
+        List<String> empty = new ArrayList<>();
+        try {
+            return postService.getAllPostsFromId(userId);
+        }catch (IdNotFoundException e){
+            e.getMessage();
+        }
+        return empty;
     }
 
-    @GetMapping("/text-of-post-from-user")
-    public List<String> getPost(@RequestParam Integer userId){
-        return postRepository.findByUser_id(userId);
-    }
 
 
 }
