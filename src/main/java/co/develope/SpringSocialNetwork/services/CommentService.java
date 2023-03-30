@@ -34,7 +34,10 @@ public class CommentService {
         Optional<Post> myPost = postRepository.findById(comment.getPostId());
         if(myUser.isPresent()){
             if(myPost.isPresent()){
-                return commentRepository.save(new Comment(comment.getText(), myUser.get(), myPost.get()));
+                Comment comm = new Comment(comment.getText(), myUser.get(), myPost.get());
+                myUser.get().getComments().add(comm);
+                myPost.get().getComments().add(comm);
+                return commentRepository.save(comm);
             }else{
                 throw new PostNotFoundException("Post with id: '" + comment.getPostId() + "' not found");
             }
@@ -73,6 +76,8 @@ public class CommentService {
     public ResponseEntity deleteCommentById(Integer id){
         Optional<Comment> myComment = commentRepository.findById(id);
         if(myComment.isPresent()){
+            myComment.get().getPostToComment().getComments().remove(myComment.get());
+            myComment.get().getUserWhoComments().getComments().remove(myComment.get());
             commentRepository.deleteById(id);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
         }

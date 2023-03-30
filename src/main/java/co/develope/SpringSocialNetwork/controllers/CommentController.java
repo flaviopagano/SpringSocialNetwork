@@ -37,9 +37,9 @@ public class CommentController {
     }
 
     @GetMapping("/get-comment/{id}")
-    public ResponseEntity getCommentById(@PathVariable Integer commentId){
+    public ResponseEntity getCommentById(@PathVariable Integer id){
         try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(commentId));
+            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id));
         } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -69,8 +69,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteSingleComment(@PathVariable Integer commentId){
-        return commentService.deleteCommentById(commentId);
+    public ResponseEntity deleteSingleComment(@PathVariable Integer id){
+        return commentService.deleteCommentById(id);
     }
 
 }
