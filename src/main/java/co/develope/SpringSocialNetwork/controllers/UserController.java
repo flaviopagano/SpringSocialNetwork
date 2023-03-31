@@ -67,7 +67,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable int id) {
+    public ResponseEntity<User> getUser(@PathVariable Integer id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -79,31 +79,10 @@ public class UserController {
 
         /**
          * Metodo per aggiornare il proprio profilo, username, email, name, surname
-         * Anche qui non funziona perchè invece di aggiornare lo user coi nuovi parametri, ne crea uno nuovo;
-         * non so dove sia l'errore.
          * per aldo: non cancellare quello che ho scritto io magari commenta il tutto
          */
-//        @PutMapping("/update-user")
-//        public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
-//            try {
-//                Optional<User> optionalUser = userRepository.findByUsername(userDTO.getUsername());
-//            if (!optionalUser.isPresent()) {
-//                return ResponseEntity.notFound().build();
-//            }
-//                 User userToUpdate = optionalUser.get();
- //                userToUpdate.setUsername(userDTO.getUsername());
-//                 userToUpdate.setEmail(userDTO.getEmail());
-//
-//             userRepository.save(updatedUser);
-//             return ResponseEntity.ok(updatedUser);
-//
-//            } catch (UsernameAlreadyPresentException | EmailAlreadyPresentException e) {
-//                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-//            }
-//        }
-
-        @PutMapping("/update-user")
-        public ResponseEntity<User> updateUser(@RequestBody User user, @RequestParam Integer id) {
+        @PutMapping("/update-user/{id}")
+        public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable Integer id) {
 
             Optional<User> optionalUser = userRepository.findById(id);
             if (!optionalUser.isPresent()) {
@@ -111,20 +90,20 @@ public class UserController {
             }
 
             User userToUpdate = optionalUser.get();
-            userRepository.save(userToUpdate);
             userToUpdate.setUsername(user.getUsername());
             userToUpdate.setEmail(user.getEmail());
 
+            userRepository.save(userToUpdate);
             return ResponseEntity.ok(userToUpdate);
 
         }
 
         /**
-         *   Metodo per cancellare lo user (non funziona un cazzo)
+         *   Metodo per cancellare lo user
          *   per aldo: non cancellare quello che ho scritto io magari commenta il tutto
          */
-        @DeleteMapping("/delete-user")
-        public ResponseEntity <User> deleteUser (@PathVariable("id") Integer id){
+        @DeleteMapping("/delete-user/{id}")
+        public ResponseEntity <User> deleteUser (@PathVariable Integer id){
             Optional<User> user = userRepository.findById(id);
             if ( !user.isPresent() ) {
                 return ResponseEntity.notFound().build();
