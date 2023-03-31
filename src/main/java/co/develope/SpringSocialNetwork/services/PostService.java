@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +78,7 @@ public class PostService {
         if(myPost.isPresent()){
             Post post = myPost.get();
             post.setText(postDTO.getText());
+            post.setUpdateDate(LocalDateTime.now());
             postRepository.save(post);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("The post has been edited");
         }
