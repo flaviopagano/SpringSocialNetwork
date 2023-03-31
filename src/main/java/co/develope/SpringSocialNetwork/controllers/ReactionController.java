@@ -9,7 +9,6 @@ import co.develope.SpringSocialNetwork.services.ReactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,10 +23,10 @@ public class ReactionController {
     @Autowired
     private ReactionRepository reactionRepository;
 
-    @PostMapping("/create")
-    public ResponseEntity createReaction (ReactionDTO reaction) {
+    @PostMapping("/create/loving")
+    public ResponseEntity createLovingReaction (@RequestBody ReactionDTO reaction) {
         try {
-            reactionService.addReaction(reaction);
+            reactionService.addLovingReaction(reaction);
             return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -36,10 +35,70 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/loving")
-    public ResponseEntity createLovingReaction (ReactionDTO reaction) {
+    @PostMapping("/create/angry")
+    public ResponseEntity createAngryReaction (@RequestBody ReactionDTO reaction) {
         try {
-            reactionService.addLovingReaction(reaction);
+            reactionService.addAngryReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create/hate")
+    public ResponseEntity createHateReaction (@RequestBody ReactionDTO reaction) {
+        try {
+            reactionService.addHateReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create/praying")
+    public ResponseEntity createPrayingReaction (@RequestBody ReactionDTO reaction) {
+        try {
+            reactionService.addPrayingReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create/happy")
+    public ResponseEntity createHappyReaction (@RequestBody ReactionDTO reaction) {
+        try {
+            reactionService.addHappyReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create/sad")
+    public ResponseEntity createSadReaction (@RequestBody ReactionDTO reaction) {
+        try {
+            reactionService.addSadReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create/crying")
+    public ResponseEntity createCryingReaction (@RequestBody ReactionDTO reaction) {
+        try {
+            reactionService.addCryingReaction(reaction);
             return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -55,6 +114,7 @@ public class ReactionController {
 
     @DeleteMapping("/delete-reaction/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
-        return reactionService.deleteReactionById(id);
+        reactionService.deleteReactionById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted!");
     }
 }

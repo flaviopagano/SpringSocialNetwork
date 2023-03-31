@@ -7,7 +7,6 @@ import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.enums.ReactionType;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
@@ -31,15 +30,12 @@ public class ReactionService {
     @Autowired
     private PostRepository postRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
-
-    public Reaction addReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+    public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
         Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
         Optional<Post> myPost = postRepository.findById(reaction.getPostId());
         if(myUser.isPresent()){
             if(myPost.isPresent()){
-                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), reaction.getReactionType());
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.LOVING);
                 myUser.get().getReactions().add(reactionNew);
                 myPost.get().getReactions().add(reactionNew);
                 return reactionRepository.save(reactionNew);
@@ -51,12 +47,97 @@ public class ReactionService {
         }
     }
 
-    public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+    public Reaction addAngryReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
         Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
         Optional<Post> myPost = postRepository.findById(reaction.getPostId());
         if(myUser.isPresent()){
             if(myPost.isPresent()){
-                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.LOVING);
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.ANGRY);
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
+    public Reaction addHateReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.HATE);
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
+    public Reaction addPrayingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.PRAYING);
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
+    public Reaction addHappyReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.HAPPY);
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
+    public Reaction addSadReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.SAD);
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
+    public Reaction addCryingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), ReactionType.CRYING);
                 myUser.get().getReactions().add(reactionNew);
                 myPost.get().getReactions().add(reactionNew);
                 return reactionRepository.save(reactionNew);

@@ -26,6 +26,7 @@ public class Reaction extends BaseEntity{
     }
 
     public Reaction(Post post, User user, ReactionType reactionType){
+        super();
         this.postToReact = post;
         this.userWhoReacts = user;
         this.reactionType = reactionType;
