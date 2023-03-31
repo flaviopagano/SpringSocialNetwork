@@ -99,7 +99,6 @@ public class UserService {
                     reactionsOfThePost.remove(singleReaction);
                     reactionRepository.delete(singleReaction);
                 }
-
                 myListPosts.remove(singlePost);
                 postRepository.delete(singlePost);
 
