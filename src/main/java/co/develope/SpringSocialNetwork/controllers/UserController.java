@@ -3,6 +3,7 @@ package co.develope.SpringSocialNetwork.controllers;
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.EmailAlreadyPresentException;
+import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UsernameAlreadyPresentException;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
@@ -11,11 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.transaction.TransactionScoped;
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -67,13 +64,11 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Integer id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity getUser(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok().body(userService.getUserById(id));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -81,35 +76,21 @@ public class UserController {
          * Metodo per aggiornare il proprio profilo, username, email, name, surname
          * per aldo: non cancellare quello che ho scritto io magari commenta il tutto
          */
-        @PutMapping("/update-user/{id}")
-        public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable Integer id) {
-
-            Optional<User> optionalUser = userRepository.findById(id);
-            if (!optionalUser.isPresent()) {
-                return ResponseEntity.notFound().build();
+        @PutMapping("/update/{id}")
+        public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
+            try {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
+            } catch (UserNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
-
-            User userToUpdate = optionalUser.get();
-            userToUpdate.setUsername(user.getUsername());
-            userToUpdate.setEmail(user.getEmail());
-
-            userRepository.save(userToUpdate);
-            return ResponseEntity.ok(userToUpdate);
-
         }
 
         /**
          *   Metodo per cancellare lo user
          *   per aldo: non cancellare quello che ho scritto io magari commenta il tutto
          */
-        @DeleteMapping("/delete-user/{id}")
+        /*@DeleteMapping("/delete/{id}")
         public ResponseEntity <User> deleteUser (@PathVariable Integer id){
-            Optional<User> user = userRepository.findById(id);
-            if ( !user.isPresent() ) {
-                return ResponseEntity.notFound().build();
-            }
-            userRepository.deleteById(id);
-
-            return ResponseEntity.ok().build();
-        }
+            return userService.deleteUserById(id);
+        }*/
 }
