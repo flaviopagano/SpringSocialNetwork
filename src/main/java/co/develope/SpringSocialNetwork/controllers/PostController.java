@@ -3,6 +3,7 @@ package co.develope.SpringSocialNetwork.controllers;
 import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.services.PostService;
@@ -34,21 +35,47 @@ public class PostController {
         }
     }
 
-    @GetMapping("/find-all-by-id")
-    public List<String> getAllUserPosts(@RequestParam Integer userId) throws IdNotFoundException {
+    @GetMapping("/get-post-by-id")
+    public ResponseEntity getPostById(@RequestParam Integer postId){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId));
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    /*@GetMapping("/get-all-by-user-id")
+    public ResponseEntity getAllPostsFromUser(@RequestParam Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostsFromUserId(id));
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+
+    /*@GetMapping("/get-all-by-user-id")
+    public List<Post> getAllPostsFromUser(@RequestParam Integer id){
+        try {
+            return postService.getAllPostsFromUserId(id);
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+
+    /*@GetMapping("/find-all-post-text-from-user")
+    public ResponseEntity getAllUserPosts(@RequestParam Integer userId){
         List<String> empty = new ArrayList<>();
         try {
-            return postService.getAllPostsFromId(userId);
+            return ResponseEntity.status(200).body(postService.getAllPostsFromId(userId));
         }catch (IdNotFoundException e){
-            e.getMessage();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return empty;
-    }
-    @DeleteMapping("/delete")
+    }*/
+    /*@DeleteMapping("/delete")
     public ResponseEntity deletePost(@RequestParam Integer postId){
         return postService.deletePostById(postId);
-    }
-    @PutMapping("/edit")
+    }*/
+    @PutMapping("/edit-text-by-id")
     public ResponseEntity editPost(@RequestParam Integer postId, @RequestBody PostDTO postDTO){
         return postService.editPostById(postId,postDTO);
     }

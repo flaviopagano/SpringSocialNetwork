@@ -5,6 +5,7 @@ import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
@@ -82,6 +83,22 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post has not been found");
     }
 
+    public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isPresent()){
+            return optionalUser.get().getPosts();
+        }else{
+            throw new UserNotFoundException("User with id: '" + userId + "' not found");
+        }
+    }
 
+    public Post getPostById(Integer id) throws PostNotFoundException {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if(optionalPost.isPresent()){
+            return optionalPost.get();
+        }else{
+            throw new PostNotFoundException("Post with id: '" + id + "' not found");
+        }
+    }
 
 }
