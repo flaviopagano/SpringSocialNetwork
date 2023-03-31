@@ -8,17 +8,25 @@ import javax.persistence.*;
 @Entity
 @Table(name = "reactions")
 public class Reaction extends BaseEntity{
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReactionType reactionType;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post postToReact;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userWhoReacts;
 
+    public Reaction() {
+    }
+
     public Reaction(Post post, User user, ReactionType reactionType){
+        super();
         this.postToReact = post;
         this.userWhoReacts = user;
         this.reactionType = reactionType;
@@ -44,8 +52,9 @@ public class Reaction extends BaseEntity{
         return reactionType;
     }
 
-    public void setReactionType(ReactionType reactionType) {
+    public Reaction setReactionType(ReactionType reactionType) {
         this.reactionType = reactionType;
+        return null;
     }
 
 }

@@ -7,5 +7,8 @@ public enum ReactionType {
     PRAYING,
     HAPPY,
     SAD,
-    CRYING
+    CRYING;
+
+    ReactionType() {
+    }
 }
