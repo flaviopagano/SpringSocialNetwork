@@ -24,6 +24,18 @@ public class ReactionController {
     @Autowired
     private ReactionRepository reactionRepository;
 
+    @PostMapping("/create")
+    public ResponseEntity createReaction (ReactionDTO reaction) {
+        try {
+            reactionService.addReaction(reaction);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Reaction added!");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(PostNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create/loving")
     public ResponseEntity createLovingReaction (ReactionDTO reaction) {
         try {

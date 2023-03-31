@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Table(name = "reactions")
 public class Reaction extends BaseEntity{
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReactionType reactionType;
 

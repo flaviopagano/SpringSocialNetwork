@@ -34,6 +34,23 @@ public class ReactionService {
     @Autowired
     private CommentRepository commentRepository;
 
+    public Reaction addReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
+        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        if(myUser.isPresent()){
+            if(myPost.isPresent()){
+                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), reaction.getReactionType());
+                myUser.get().getReactions().add(reactionNew);
+                myPost.get().getReactions().add(reactionNew);
+                return reactionRepository.save(reactionNew);
+            } else {
+                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
+            }
+        } else{
+            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
+        }
+    }
+
     public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
         Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
         Optional<Post> myPost = postRepository.findById(reaction.getPostId());
