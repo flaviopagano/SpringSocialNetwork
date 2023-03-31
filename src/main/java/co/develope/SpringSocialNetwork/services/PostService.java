@@ -6,6 +6,7 @@ import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
+import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class PostService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
 
     public Post getPostFromPostDTO(PostDTO post) throws UserNotFoundException {
@@ -48,9 +52,19 @@ public class PostService {
         }
     }
 
+
+    /** funziona, ma non trova piu nulla quindi entra in httpstatus not found **/
     public ResponseEntity deletePostById(Integer id){
         Optional<Post> myPost = postRepository.findById(id);
         if(myPost.isPresent()){
+
+            /** prendo la lista, assegno null alla foreign key e deleto i comment con un forEach  **/
+            List<Comment> comments = myPost.get().getComments();
+            for(Comment comment : comments){
+                comment.setPostToComment(null);
+                commentRepository.delete(comment);
+            }
+
             postRepository.deleteById(id);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("The post has been deleted");
         }
