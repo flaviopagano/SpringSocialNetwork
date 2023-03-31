@@ -71,7 +71,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
         /**
          * Metodo per aggiornare il proprio profilo, username, email, name, surname
          * per aldo: non cancellare quello che ho scritto io magari commenta il tutto
