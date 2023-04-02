@@ -44,37 +44,20 @@ public class PostController {
         }
     }
 
-    /*@GetMapping("/get-all-by-user-id")
-    public ResponseEntity getAllPostsFromUser(@RequestParam Integer id){
+    @GetMapping("/get-all-by-user-id")
+    public ResponseEntity getAllPostsFromUser(@RequestParam Integer userId){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostsFromUserId(id));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostsFromUserId(userId));
         } catch (UserNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }*/
+    }
 
-    /*@GetMapping("/get-all-by-user-id")
-    public List<Post> getAllPostsFromUser(@RequestParam Integer id){
-        try {
-            return postService.getAllPostsFromUserId(id);
-        } catch (UserNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
-    /*@GetMapping("/find-all-post-text-from-user")
-    public ResponseEntity getAllUserPosts(@RequestParam Integer userId){
-        List<String> empty = new ArrayList<>();
-        try {
-            return ResponseEntity.status(200).body(postService.getAllPostsFromId(userId));
-        }catch (IdNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }*/
-    /*@DeleteMapping("/delete")
+/*    @DeleteMapping("/delete")
     public ResponseEntity deletePost(@RequestParam Integer postId){
         return postService.deletePostById(postId);
-    }*/
+    } */
+
     @PutMapping("/edit-text-by-id")
     public ResponseEntity editPost(@RequestParam Integer postId, @RequestBody PostDTO postDTO){
         return postService.editPostById(postId,postDTO);
