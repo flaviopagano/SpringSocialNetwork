@@ -2,9 +2,7 @@ package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
-import co.develope.SpringSocialNetwork.exceptions.EmailAlreadyPresentException;
-import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.exceptions.UsernameAlreadyPresentException;
+import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +40,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (EmailAlreadyPresentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch(EmailNotValidException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch(PasswordNotValidException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
