@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -87,12 +88,17 @@ public class UserController {
             }
         }
 
-        /**
-         *   Metodo per cancellare lo user
-         *   per aldo: non cancellare quello che ho scritto io magari commenta il tutto
-         */
-        /*@DeleteMapping("/delete/{id}")
-        public ResponseEntity <User> deleteUser (@PathVariable Integer id){
-            return userService.deleteUserById(id);
-        }*/
-}
+
+
+            @DeleteMapping("/delete/{id}")
+            public ResponseEntity deleteUser (@PathVariable Integer id) {
+                Optional<User> optionalUser = userRepository.findById(id);
+                if(optionalUser.isPresent()){
+                    userRepository.deleteById(id);
+                    return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+
+                }return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+
+            }
+    }
