@@ -6,7 +6,10 @@ import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -60,6 +63,18 @@ public class UserService {
         userToUpdate.setUpdateDate(LocalDateTime.now());
         return userRepository.save(userToUpdate);
     }
+
+
+
+    /*public ResponseEntity deleteUser (Integer id)  {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            userRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }*/
 
 }
 

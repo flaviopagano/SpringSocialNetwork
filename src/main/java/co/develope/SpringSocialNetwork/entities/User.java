@@ -3,10 +3,7 @@ package co.develope.SpringSocialNetwork.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -20,6 +17,12 @@ public class User extends BaseEntity{
 
     @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
+    private Date DateOfBirth;
+
+    @Column(nullable = false)
+    private String placeOfBirth;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -100,6 +103,22 @@ public class User extends BaseEntity{
 
     public String getPassword() {
         return password;
+    }
+
+    public Date getDateOfBirth() {
+        return DateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        DateOfBirth = dateOfBirth;
+    }
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
+
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
     }
 
     public void setPassword(String password) {

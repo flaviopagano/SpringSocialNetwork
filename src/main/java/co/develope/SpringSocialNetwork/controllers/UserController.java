@@ -58,6 +58,8 @@ public class UserController {
     }
 
 
+
+
     /**
      * Ho fatto la stessa cosa con il metodo GetUser. Ho modificato il return.
      *
@@ -99,16 +101,20 @@ public class UserController {
         }
 
 
-
-            /*@DeleteMapping("/delete/{id}")
+            /*
+            @DeleteMapping("/delete/{id}")
             public ResponseEntity deleteUser (@PathVariable Integer id) {
-                Optional<User> optionalUser = userRepository.findById(id);
-                if(optionalUser.isPresent()){
+                try{
+                    logger.info("user deleted");
                     userRepository.deleteById(id);
-                    return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+                    return ResponseEntity.status(HttpStatus.OK).body("user successfully deleted ");
+                }catch (Exception e) {
+                    logger.warn(e.getMessage());
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }*/
 
-                }return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
 
-            }*/
+
     }
+
