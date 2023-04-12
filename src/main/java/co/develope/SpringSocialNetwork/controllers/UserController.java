@@ -90,7 +90,7 @@ public class UserController {
 
 
 
-            @DeleteMapping("/delete/{id}")
+            /*@DeleteMapping("/delete/{id}")
             public ResponseEntity deleteUser (@PathVariable Integer id) {
                 Optional<User> optionalUser = userRepository.findById(id);
                 if(optionalUser.isPresent()){
@@ -100,5 +100,5 @@ public class UserController {
                 }return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
 
-            }
+            }*/
     }
