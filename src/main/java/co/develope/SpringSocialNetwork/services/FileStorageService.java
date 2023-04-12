@@ -14,13 +14,14 @@ import java.util.UUID;
 public class FileStorageService {
 
     @Value("${fileRepositoryFolder}")
-    private String fileRepositoryFolder;
-
+    private String folderName;
 
     public String upload(MultipartFile file) throws IOException {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String newFileName = UUID.randomUUID().toString();
         String completeFileName = newFileName + "." + extension;
+
+        String fileRepositoryFolder = System.getProperty("user.home") + "/Desktop/" + folderName;
 
         File finalFolder = new File(fileRepositoryFolder);
         if(!finalFolder.exists()) throw new IOException("Final folder does not exists");

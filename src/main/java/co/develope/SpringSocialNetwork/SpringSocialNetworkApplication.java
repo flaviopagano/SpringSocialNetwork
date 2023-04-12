@@ -8,6 +8,7 @@ public class SpringSocialNetworkApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringSocialNetworkApplication.class, args);
+
 	}
 
 }
