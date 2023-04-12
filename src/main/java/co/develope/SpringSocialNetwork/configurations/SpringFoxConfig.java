@@ -30,7 +30,7 @@ public class SpringFoxConfig {
                         "http://en.wikipedia.org/wiki/MIT_License",
                         new Contact("Gaia Zanchi","https://github.com/gaiazanchi" ,"gaia.zanchi2001@gmail.com"),
                         //new Contact("Alma Caciula Negrea","https://github.com/AlmaCN", "almacaciulanegrea@gmail.com"),
-                        //new Contact("Aldo Mancuso","",""),
+                        //new Contact("Aldo Mancuso","https://github.com/Aldomancuso97","mancusoaldo8@gmail.com"),
                         //new Contact("Flavio Pagano", "https://github.com/flaviopagano", "pagano.flavio@outlook.com"),
                         //new Contact("Alessandro Gobetti", "https://github.com/alegbt", "alessandrogbt94@gmail.com"),
                         "MIT",
