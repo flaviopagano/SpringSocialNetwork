@@ -5,6 +5,8 @@ import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     /**
      * Ho rifatto il metodo con l'implementazione del database usando UserRepository
@@ -35,15 +39,20 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity createUser(@RequestBody UserDTO user) {
         try {
+            logger.info("User created successfully ");
             userRepository.save(userService.getUserFromUserDTO(user));
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully!");
         } catch (UsernameAlreadyPresentException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (EmailAlreadyPresentException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }catch(EmailNotValidException e){
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }catch(PasswordNotValidException e){
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -69,21 +78,22 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity getUser(@PathVariable Integer id) {
         try {
+            logger.info("user selected by id ");
             return ResponseEntity.ok().body(userService.getUserById(id));
         } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-        /**
-         * Metodo per aggiornare il proprio profilo, username, email, name, surname
-         * per aldo: non cancellare quello che ho scritto io magari commenta il tutto
-         */
+
         @PutMapping("/update/{id}")
         public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
             try {
+                logger.info("user updated successfully");
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
             } catch (UserNotFoundException e) {
+                logger.warn(e.getMessage());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
