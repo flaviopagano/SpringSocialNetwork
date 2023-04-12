@@ -27,11 +27,11 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Post> posts = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Comment> comments = new ArrayList<>();
 
