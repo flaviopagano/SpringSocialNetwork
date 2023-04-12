@@ -2,9 +2,7 @@ package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
-import co.develope.SpringSocialNetwork.exceptions.EmailAlreadyPresentException;
-import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.exceptions.UsernameAlreadyPresentException;
+import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -42,6 +41,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (EmailAlreadyPresentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch(EmailNotValidException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch(PasswordNotValidException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -85,12 +88,17 @@ public class UserController {
             }
         }
 
-        /**
-         *   Metodo per cancellare lo user
-         *   per aldo: non cancellare quello che ho scritto io magari commenta il tutto
-         */
-        /*@DeleteMapping("/delete/{id}")
-        public ResponseEntity <User> deleteUser (@PathVariable Integer id){
-            return userService.deleteUserById(id);
-        }*/
-}
+
+
+            /*@DeleteMapping("/delete/{id}")
+            public ResponseEntity deleteUser (@PathVariable Integer id) {
+                Optional<User> optionalUser = userRepository.findById(id);
+                if(optionalUser.isPresent()){
+                    userRepository.deleteById(id);
+                    return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+
+                }return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+
+            }*/
+    }

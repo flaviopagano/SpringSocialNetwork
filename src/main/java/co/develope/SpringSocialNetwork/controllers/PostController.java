@@ -1,8 +1,6 @@
 package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
-import co.develope.SpringSocialNetwork.entities.Post;
-import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
@@ -11,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
