@@ -1,8 +1,6 @@
 package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.PostDTO;
-import co.develope.SpringSocialNetwork.entities.Post;
-import co.develope.SpringSocialNetwork.exceptions.IdNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
