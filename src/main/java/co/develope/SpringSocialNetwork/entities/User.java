@@ -18,10 +18,15 @@ public class User extends BaseEntity{
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    /** decommenta i due nullable = false quando avrai aggiunto i due campi alla creazione dell'user, ora come ora
+     * bloccano tutto perche creando un user non si possono assegnre quei due campi ma possiedono allo stesso
+     * tempo il constraint
+     * Vedi anche se conviene usare Date o LocalDateTime **/
+
+    @Column//(nullable = false)
     private Date DateOfBirth;
 
-    @Column(nullable = false)
+    @Column//(nullable = false)
     private String placeOfBirth;
 
     @Column(unique = true, nullable = false)
