@@ -21,6 +21,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    /** forse il parametro sarebbe meglio chiamarlo UserDTO userDTO) altrimenti riga 40 e' confusionaria */
     public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException, EmailNotValidException, PasswordNotValidException {
 
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
