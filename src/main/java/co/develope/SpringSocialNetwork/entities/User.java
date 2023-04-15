@@ -3,6 +3,7 @@ package co.develope.SpringSocialNetwork.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -24,7 +25,9 @@ public class User extends BaseEntity{
      * Vedi anche se conviene usare Date o LocalDateTime **/
 
     @Column//(nullable = false)
-    private Date DateOfBirth;
+    // ho cambiato "Date" in "LocalDateTime" perchè pare sia una
+    // libreria di Java più recente e più versatile
+    private LocalDateTime dateOfBirth;
 
     @Column//(nullable = false)
     private String placeOfBirth;
@@ -53,13 +56,16 @@ public class User extends BaseEntity{
 
     public User(){}
 
-    public User(String name, String surname, String username, String email, String password) {
+    public User(String name, String surname, String username, String email, String password,
+                LocalDateTime dateOfBirth, String placeOfBirth) {
         super();
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.placeOfBirth = placeOfBirth;
     }
 
     /*public User(String id, String name, String surname) {
@@ -110,12 +116,12 @@ public class User extends BaseEntity{
         return password;
     }
 
-    public Date getDateOfBirth() {
-        return DateOfBirth;
+    public LocalDateTime getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        DateOfBirth = dateOfBirth;
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getPlaceOfBirth() {

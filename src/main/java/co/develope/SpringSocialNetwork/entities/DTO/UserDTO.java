@@ -1,5 +1,9 @@
 package co.develope.SpringSocialNetwork.entities.DTO;
 
+import net.bytebuddy.asm.Advice;
+
+import java.time.LocalDateTime;
+
 public class UserDTO {
 
     private String name;
@@ -7,15 +11,22 @@ public class UserDTO {
     private String username;
     private String email;
     private String password;
+    private LocalDateTime dateOfBirth;
+    private String placeOfBirth;
+
+
 
     public UserDTO(){}
 
-    public UserDTO(String name, String surname, String username, String email, String password) {
+    public UserDTO(String name, String surname, String username, String email, String password,
+                   LocalDateTime dateOfBirth, String placeOfBirth) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.placeOfBirth = placeOfBirth;
     }
 
     public String getName() {
@@ -56,6 +67,22 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LocalDateTime getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
+
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
     }
 
 }
