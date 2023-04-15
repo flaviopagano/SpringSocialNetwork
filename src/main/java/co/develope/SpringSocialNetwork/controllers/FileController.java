@@ -1,6 +1,6 @@
 package co.develope.SpringSocialNetwork.controllers;
 
-import co.develope.SpringSocialNetwork.services.FileStorageService;
+import co.develope.SpringSocialNetwork.services.fileStorageServices.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package co.develope.SpringSocialNetwork.services;
+package co.develope.SpringSocialNetwork.services.fileStorageServices;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
