@@ -30,14 +30,60 @@ public class UserService {
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new EmailAlreadyPresentException();
         }
-        if(!user.getEmail().contains("@")){ //da aggiungere controlli
-            throw new EmailNotValidException();
-        }
-        if(user.getPassword().contains("/")){ //da aggiungere controlli
+//        if(!user.getEmail().contains("@")){ //da aggiungere controlli
+//            throw new EmailNotValidException();
+//        }
+//        if(user.getPassword().contains("/")){ //da aggiungere controlli
+//            throw new PasswordNotValidException();
+//        }
+
+
+        // Check special characters within password
+        if ((user.getPassword().contains("@") || user.getPassword().contains("#")
+                || user.getPassword().contains("!") || user.getPassword().contains("~")
+                || user.getPassword().contains("$") || user.getPassword().contains("%")
+                || user.getPassword().contains("^") || user.getPassword().contains("&")
+                || user.getPassword().contains("*") || user.getPassword().contains("(")
+                || user.getPassword().contains(")") || user.getPassword().contains("-")
+                || user.getPassword().contains("+") || user.getPassword().contains("/")
+                || user.getPassword().contains(":") || user.getPassword().contains(".")
+                || user.getPassword().contains(", ") || user.getPassword().contains("<")
+                || user.getPassword().contains(">") || user.getPassword().contains("?")
+                || user.getPassword().contains("|"))) {
             throw new PasswordNotValidException();
         }
+
+        //  Check if password length
+        //  is between 8 and 15 characters
+        if (!((user.getPassword().length() >= 8)
+                && (user.getPassword().length() <= 15))) {
+            throw new PasswordNotValidException();
+        }
+
+        // to check space
+        if (user.getPassword().contains(" ")) {
+            throw new PasswordNotValidException();
+        }
+
+
+        if ((user.getEmail().contains("#")
+                || user.getEmail().contains("!") || user.getEmail().contains("~")
+                || user.getPassword().contains("$") || user.getEmail().contains("%")
+                || user.getEmail().contains("^") || user.getEmail().contains("&")
+                || user.getEmail().contains("*") || user.getEmail().contains("(")
+                || user.getEmail().contains(")") || user.getEmail().contains("-")
+                || user.getEmail().contains("+") || user.getEmail().contains("/")
+                || user.getEmail().contains(":") || user.getEmail().contains(".")
+                || user.getEmail().contains(", ") || user.getEmail().contains("<")
+                || user.getEmail().contains(">") || user.getEmail().contains("?")
+                || user.getEmail().contains("|"))) {
+            throw new EmailNotValidException();
+        }
+
+
+
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        return new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword);
+        return new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword, user.getDateOfBirth(), user.getPlaceOfBirth());
     }
 
 
