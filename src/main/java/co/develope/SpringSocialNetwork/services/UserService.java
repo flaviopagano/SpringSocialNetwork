@@ -66,14 +66,14 @@ public class UserService {
         }
 
 
-        if ((user.getEmail().contains("#")
+        if ((user.getEmail().contains(",")
                 || user.getEmail().contains("!") || user.getEmail().contains("~")
                 || user.getPassword().contains("$") || user.getEmail().contains("%")
                 || user.getEmail().contains("^") || user.getEmail().contains("&")
                 || user.getEmail().contains("*") || user.getEmail().contains("(")
                 || user.getEmail().contains(")") || user.getEmail().contains("-")
                 || user.getEmail().contains("+") || user.getEmail().contains("/")
-                || user.getEmail().contains(":") || user.getEmail().contains(".")
+                || user.getEmail().contains(":") || user.getEmail().contains("#")
                 || user.getEmail().contains(", ") || user.getEmail().contains("<")
                 || user.getEmail().contains(">") || user.getEmail().contains("?")
                 || user.getEmail().contains("|"))) {
