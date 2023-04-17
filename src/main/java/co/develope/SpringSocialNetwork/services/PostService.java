@@ -10,11 +10,14 @@ import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.fileStorageServices.PostStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,60 +36,72 @@ public class PostService {
     PostStorageService postStorageService;
 
 
-     public Post createPost(PostDTO post) throws UserNotFoundException {
-         Optional<User> myUser = userRepository.findByUsername(post.getUsername());
+    Logger logger = LoggerFactory.getLogger(PostService.class);
+
+
+     public Post createPost(PostDTO postDTO) throws UserNotFoundException {
+         logger.info(postDTO.getUsername()+" is trying to create a post");
+         Optional<User> myUser = userRepository.findByUsername(postDTO.getUsername());
          if(myUser.isPresent()){
-             return new Post(post.getText(),myUser.get());
+             logger.info(postDTO.getUsername()+" has created a post");
+             return new Post(postDTO.getText(),myUser.get());
          }else{
-             throw new UserNotFoundException("User with username: '" + post.getUsername() + "' not found");
+             logger.warn(postDTO.getUsername()+" has not been found");
+             throw new UserNotFoundException("User with username: '" + postDTO.getUsername() + "' not found");
          }
      }
-     public Post createPostWithImage(PostDTO post, MultipartFile image) throws UserNotFoundException, IOException {
-         Optional<User> myUser = userRepository.findByUsername(post.getUsername());
-         if(myUser.isPresent()){
-             String postImage = postStorageService.upload(image);
-
-             return new Post(post.getText(),myUser.get(),postImage);
-         }else{
-             throw new UserNotFoundException("User with username: '" + post.getUsername() + "' not found");
-         }
+     public Post createPostWithImage(PostDTO postDTO, MultipartFile image) throws UserNotFoundException, IOException {
+         Optional<User> myUser = userRepository.findByUsername(postDTO.getUsername());
+         logger.info(postDTO.getUsername()+" is trying to create a post with an image");
+         logger.info("Uploading image");
+         String postImage = postStorageService.upload(image);
+         logger.info("Image uploaded");
+         if(!postImage.isEmpty()) {
+             if (myUser.isPresent()) {
+                 logger.info("post created");
+                 return new Post(postDTO.getText(), myUser.get(), postImage);
+             } else {
+                 logger.warn(postDTO.getUsername() + " has not been found");
+                 throw new UserNotFoundException("User with username: '" + postDTO.getUsername() + "' not found");
+             }
+         }else {
+              throw  new IOException("Image not found");
+             }
      }
 
-
-
-    public List<String> getAllTextUsernameIdOnly(Integer id) throws IdNotFoundException {
-        Optional<User> myUser = userRepository.findById(id);
-        if(myUser.isPresent()){
-            return postRepository.findAllPostsByUserId(id);
-        }else{
-            throw new IdNotFoundException();
-        }
-    }
-    public ResponseEntity editPostById(Integer postId, PostDTO postDTO){
+    public ResponseEntity editPostById(Integer postId, String text) throws PostNotFoundException{
         Optional<Post> myPost = postRepository.findById(postId);
         if(myPost.isPresent()){
+            logger.info("The post to edit with id "+postId+" has been found");
             Post post = myPost.get();
-            post.setText(postDTO.getText());
+            post.setText(text);
             post.setUpdateDate(LocalDateTime.now());
+            logger.info("The post with id "+postId+" has been edited");
             postRepository.save(post);
+            logger.info("The edit of post "+postId+" has been saved");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("The post has been edited");
         }
+        logger.warn("The post to edit with id "+postId+" has not been found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post has not been found");
     }
 
     public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(userId);
         if(optionalUser.isPresent()){
+            logger.info("Retrieving all posts from "+optionalUser);
             return postRepository.findByUserWhoPosts_Id(userId);
         }else{
-            throw new UserNotFoundException("User with id: '" + userId + "' not found");
+            logger.warn("The user with id: "+userId+" has not been found");
+            throw new UserNotFoundException("User with id: '" + userId + " not found");
         }
     }
     public Post getPostById(Integer id) throws PostNotFoundException {
         Optional<Post> optionalPost = postRepository.findById(id);
         if(optionalPost.isPresent()){
+            logger.info("Post with id: "+id+" has been found");
             return optionalPost.get();
         }else{
+            logger.warn("Post with id: "  + id + " has not been found");
             throw new PostNotFoundException("Post with id: '" + id + "' not found");
         }
     }
