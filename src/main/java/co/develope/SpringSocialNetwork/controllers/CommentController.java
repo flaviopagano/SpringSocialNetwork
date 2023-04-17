@@ -7,7 +7,6 @@ import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.services.CommentService;
-import co.develope.SpringSocialNetwork.services.ReactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,10 +82,26 @@ public class CommentController {
         return commentRepository.findAll();
     }
 
+    @PutMapping("update/{id}")
+    public ResponseEntity updateComment(@PathVariable Integer id, @RequestParam String text){
+        try {
+            logger.info("Updating all comment");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(commentService.updateComment(id, text));
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteSingleComment(@PathVariable Integer id){
-        logger.info("Deleting comment");
-        return commentService.deleteCommentById(id);
+        try {
+            logger.info("Deleting comment");
+            return commentService.deleteCommentById(id);
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }

@@ -94,18 +94,22 @@ public class CommentService {
         }
     }
 
-    public ResponseEntity deleteCommentById(Integer id){
+    public Comment updateComment(Integer id, String text) throws CommentNotFoundException {
+        logger.info("User wants to update the hole comment with id " + id);
+        Comment comment = getCommentById(id);
+        comment.setDescription(text);
+        logger.info("Update successful");
+        return commentRepository.save(comment);
+    }
+
+    public ResponseEntity deleteCommentById(Integer id) throws CommentNotFoundException {
         logger.info("User wants to delete the comment with id " + id);
-        Optional<Comment> myComment = commentRepository.findById(id);
-        if(myComment.isPresent()){
-            myComment.get().getPostToComment().getComments().remove(myComment.get());
-            myComment.get().getUserWhoComments().getComments().remove(myComment.get());
-            commentRepository.deleteById(id);
-            logger.info("Comment deleted successfully");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
-        }
-        logger.info("Comment with id " + id + " not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+        Comment myComment = getCommentById(id);
+        myComment.getPostToComment().getComments().remove(myComment);
+        myComment.getUserWhoComments().getComments().remove(myComment);
+        commentRepository.deleteById(id);
+        logger.info("Comment deleted successfully");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
     }
 
 }
