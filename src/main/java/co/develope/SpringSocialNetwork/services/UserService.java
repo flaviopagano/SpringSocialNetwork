@@ -5,6 +5,8 @@ import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +20,21 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     UserRepository userRepository;
 
     /** forse il parametro sarebbe meglio chiamarlo UserDTO userDTO) altrimenti riga 40 e' confusionaria */
     public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException, EmailNotValidException, PasswordNotValidException {
-
+        logger.info("Trying to retrieve User from DTO by username");
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
+            logger.warn("User with username " + user.getUsername() + " not found");
             throw new UsernameAlreadyPresentException("Username: '" + user.getUsername() + "' already present");
         }
+        logger.info("Trying to retrieve User from DTO by email");
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            logger.warn("User with email " + user.getEmail() + " not found");
             throw new EmailAlreadyPresentException();
         }
 //        if(!user.getEmail().contains("@")){ //da aggiungere controlli
@@ -38,7 +45,7 @@ public class UserService {
 //        }
 
 
-        // Check special characters within password
+        // Check if password contains special characters, then throw custom error
         if ((user.getPassword().contains("@") || user.getPassword().contains("#")
                 || user.getPassword().contains("!") || user.getPassword().contains("~")
                 || user.getPassword().contains("$") || user.getPassword().contains("%")
@@ -50,6 +57,7 @@ public class UserService {
                 || user.getPassword().contains(", ") || user.getPassword().contains("<")
                 || user.getPassword().contains(">") || user.getPassword().contains("?")
                 || user.getPassword().contains("|"))) {
+                logger.warn("Invalid Password: special characters not allowed");
             throw new PasswordNotValidException();
         }
 
@@ -57,15 +65,18 @@ public class UserService {
         //  is between 8 and 15 characters
         if (!((user.getPassword().length() >= 8)
                 && (user.getPassword().length() <= 15))) {
+            logger.warn("Invalid Password: must be between 8 and 15 characters");
             throw new PasswordNotValidException();
         }
 
         // to check space
         if (user.getPassword().contains(" ")) {
+            logger.warn("Invalid Password: space not allowed");
             throw new PasswordNotValidException();
         }
 
 
+        // Check if email contains special characters, then throw custom error
         if ((user.getEmail().contains(",")
                 || user.getEmail().contains("!") || user.getEmail().contains("~")
                 || user.getEmail().contains("$") || user.getEmail().contains("%")
@@ -77,6 +88,7 @@ public class UserService {
                 || user.getEmail().contains(", ") || user.getEmail().contains("<")
                 || user.getEmail().contains(">") || user.getEmail().contains("?")
                 || user.getEmail().contains("|"))) {
+                logger.warn("Invalid Email: special characters are not allowed");
             throw new EmailNotValidException();
         }
 
@@ -88,17 +100,22 @@ public class UserService {
 
 
     public User getUserById(Integer id) throws UserNotFoundException {
+        logger.info("User is trying to retrieve a user by id");
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
+            logger.info("Retrieving successful");
             return optionalUser.get();
         } else {
+            logger.warn("User with id " + id + " not found");
             throw new UserNotFoundException("User with id: '" + id + "' not found");
         }
     }
 
     public User updateAllUser(Integer id, UserDTO user) throws UserNotFoundException {
+        logger.info("User is trying to update");
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
+            logger.warn("User " + id + " does not exist");
             throw new UserNotFoundException("User with id: '" + id + "' not found");
         }
         User userToUpdate = optionalUser.get();
@@ -108,6 +125,7 @@ public class UserService {
         userToUpdate.setEmail(user.getEmail());
         userToUpdate.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userToUpdate.setUpdateDate(LocalDateTime.now());
+        logger.info("Update successful");
         return userRepository.save(userToUpdate);
     }
 
