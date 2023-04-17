@@ -95,7 +95,7 @@ public class CommentService {
     }
 
     public Comment updateComment(Integer id, String text) throws CommentNotFoundException {
-        logger.info("User wants to update the hole comment with id " + id);
+        logger.info("User wants to update the comment with id " + id);
         Comment comment = getCommentById(id);
         comment.setDescription(text);
         logger.info("Update successful");
