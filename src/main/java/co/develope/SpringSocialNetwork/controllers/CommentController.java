@@ -85,7 +85,7 @@ public class CommentController {
     @PutMapping("update/{id}")
     public ResponseEntity updateComment(@PathVariable Integer id, @RequestParam String text){
         try {
-            logger.info("Updating all comment");
+            logger.info("Updating comment");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(commentService.updateComment(id, text));
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
@@ -98,6 +98,46 @@ public class CommentController {
         try {
             logger.info("Deleting comment");
             return commentService.deleteCommentById(id);
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-publication-date")
+    public ResponseEntity getPublicationDate(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getPublicationDate());
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-update-date")
+    public ResponseEntity getUpdateDate(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getUpdateDate());
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-user")
+    public ResponseEntity getUserWhoComments(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getUserWhoComments());
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-post")
+    public ResponseEntity getPostCommented(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getPostToComment());
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
