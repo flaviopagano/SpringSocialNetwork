@@ -7,6 +7,9 @@ import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.services.CommentService;
+import co.develope.SpringSocialNetwork.services.ReactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,8 @@ import java.util.List;
 @RequestMapping("/comment")
 public class CommentController {
 
+    Logger logger = LoggerFactory.getLogger(CommentController.class);
+
     @Autowired
     CommentService commentService;
 
@@ -27,11 +32,14 @@ public class CommentController {
     @PostMapping("/create")
     public ResponseEntity createComment(@RequestBody CommentDTO comment){
         try {
+            logger.info("Creating comment");
             commentService.createComment(comment);
             return ResponseEntity.status(HttpStatus.CREATED).body("Comment created!");
         } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }catch(PostNotFoundException e){
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -39,8 +47,10 @@ public class CommentController {
     @GetMapping("/get-comment/{id}")
     public ResponseEntity getCommentById(@PathVariable Integer id){
         try {
+            logger.info("Getting comment by id");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id));
         } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -48,8 +58,10 @@ public class CommentController {
     @GetMapping("/get-comment-from-user")
     public ResponseEntity getAllCommentsFromAUser(@RequestParam Integer userId){
         try {
+            logger.info("Getting all comments from user");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getAllCommentsFromUser(userId));
         } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -57,19 +69,23 @@ public class CommentController {
     @GetMapping("/get-comment-from-post")
     public ResponseEntity getAllCommentsFromAPost(@RequestParam Integer postId){
         try {
+            logger.info("Getting all comments from post");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getAllCommentsFromPost(postId));
         } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping
     public List<Comment> getAllComments(){
+        logger.info("Getting all comments");
         return commentRepository.findAll();
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteSingleComment(@PathVariable Integer id){
+        logger.info("Deleting comment");
         return commentService.deleteCommentById(id);
     }
 
