@@ -1,6 +1,6 @@
 package co.develope.SpringSocialNetwork.entities.DTO;
 
-import net.bytebuddy.asm.Advice;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -11,15 +11,17 @@ public class UserDTO {
     private String username;
     private String email;
     private String password;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDateTime dateOfBirth;
     private String placeOfBirth;
+    private String profilePictureFilename;
 
 
 
     public UserDTO(){}
 
     public UserDTO(String name, String surname, String username, String email, String password,
-                   LocalDateTime dateOfBirth, String placeOfBirth) {
+                   LocalDateTime dateOfBirth, String placeOfBirth,String profilePicture) {
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -27,6 +29,7 @@ public class UserDTO {
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.placeOfBirth = placeOfBirth;
+        this.profilePictureFilename = profilePicture;
     }
 
     public String getName() {
@@ -85,4 +88,11 @@ public class UserDTO {
         this.placeOfBirth = placeOfBirth;
     }
 
+    public String getProfilePicture() {
+        return profilePictureFilename;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePictureFilename = profilePicture;
+    }
 }

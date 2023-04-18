@@ -4,14 +4,13 @@ import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
+import co.develope.SpringSocialNetwork.services.fileStorageServices.FileStorageService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -24,6 +23,9 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FileStorageService fileStorageService;
 
     /** forse il parametro sarebbe meglio chiamarlo UserDTO userDTO) altrimenti riga 40 e' confusionaria */
     public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException, EmailNotValidException, PasswordNotValidException {
@@ -141,7 +143,28 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }*/
 
+
+    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(userID);
+        if(optionalUser.isEmpty()) throw new Exception("user not found");
+        // fileStorageSerive.upload() assigns the file a name, save it into the hard disk and return the name
+        String fileName = fileStorageService.upload(profilePicture);
+        User user = optionalUser.get();
+        user.setProfilePictureFilename(fileName);
+       return  userRepository.save(user);
+
+
+        }
+
+    public byte[] getUserProfilePicture(Integer id) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()) throw new Exception("Cannot find user " + id);
+        String fileName = optionalUser.get().getProfilePictureFilename();
+        return fileStorageService.download(fileName);
+    }
 }
+
+
 
 
 

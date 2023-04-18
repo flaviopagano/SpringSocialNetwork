@@ -38,6 +38,8 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
+    private String profilePictureFilename;
+
     @OneToMany
     @JsonIgnore
     List<Post> posts = new ArrayList<>();
@@ -66,6 +68,7 @@ public class User extends BaseEntity{
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.placeOfBirth = placeOfBirth;
+
     }
 
     /*public User(String id, String name, String surname) {
@@ -134,6 +137,14 @@ public class User extends BaseEntity{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getProfilePictureFilename() {
+        return profilePictureFilename;
+    }
+
+    public void setProfilePictureFilename(String profilePictureFilename) {
+        this.profilePictureFilename = profilePictureFilename;
     }
 
     public List<Post> getPosts() {
