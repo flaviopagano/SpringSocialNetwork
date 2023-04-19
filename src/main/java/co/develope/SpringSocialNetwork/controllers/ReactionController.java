@@ -132,10 +132,16 @@ public class ReactionController {
         }
     }
 
-    @GetMapping("/get-all-reactions")
-    public List<Reaction> getAllReactionFromPost(){
-        logger.info("Getting all reactions from a post");
-        return reactionRepository.findAll();
+    @GetMapping("/get-all-reactions/{id}")
+    public ResponseEntity getAllReactionFromPost(@PathVariable int postId){
+        try {
+            logger.info("Getting all reactions from a post");
+            reactionService.getAllReactionsFromPost(postId);
+            return ResponseEntity.status(HttpStatus.OK).body("Post's reactions");
+        } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/delete-reaction/{id}")
