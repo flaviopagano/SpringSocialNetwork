@@ -5,7 +5,6 @@ import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
-import co.develope.SpringSocialNetwork.services.fileStorageServices.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -28,8 +26,6 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
-
-
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -94,76 +90,56 @@ public class UserController {
         }
     }
 
-
-        @PutMapping("/update/{id}")
-        public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
-            try {
-                logger.info("user updated successfully");
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
-            } catch (UserNotFoundException e) {
-                logger.warn(e.getMessage());
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            }
+    @PutMapping("/update/{id}")
+    public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
+        try {
+            logger.info("user updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
 
     /**
      * Vogliamo fare due cose:
      * 1. caricare un'immagine nel disco fisso
-     * 2. scrivere all'interno dell'utente in questione l'url dell'immagine profilo
+     * 2. scrivere all'interno dell'utente in questione la path dell'immagine profilo
      *
-     * @param userId
-     * @param profilePictures
+     * @param id
+     * @param profilePicture
      * @return
      */
-        @PostMapping("/upload-profile/{userId}")
-        public ResponseEntity uploadProfilePicture(@PathVariable Integer userId, @RequestParam MultipartFile[] profilePictures) {
-            if (profilePictures.length == 0) {
-                return ResponseEntity.noContent().build();
-            }
-            else if (profilePictures.length > 1) {
-                return ResponseEntity.badRequest().body("Too much profile pictures, please upload only one");
-            }
-            try {
-                logger.info("Uploading profile picture for user " + userId);
-                // upload the single profile picture into the hard disk
-                // and write its partial path into correspondent user entity
-                userService.uploadProfilePicture(userId, profilePictures[0]);
-                return ResponseEntity.status(HttpStatus.OK).body("file uploaded");
-            } catch (Exception e) {
-                logger.warn(e.getMessage());
-                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-            }
-        }
-
-    @RequestMapping(value = "/download-ProfilePic/{userId}", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity viewProfilePicture(@PathVariable Integer userId){
+    @PostMapping("/{id}/upload-profile")
+    public ResponseEntity uploadProfilePicture(@PathVariable Integer id, @RequestParam MultipartFile profilePicture) {
         try {
-            logger.info("Requested profile picture for user: " + userId);
-            return ResponseEntity.ok(userService.getUserProfilePicture(userId));
-        }catch (Exception e){
-            logger.warn("internal error");
+            logger.info("Uploading profile picture for user " + id);
+            userService.uploadProfilePicture(id, profilePicture);
+            return ResponseEntity.status(HttpStatus.OK).body("File uploaded");
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-
-
-
-
-            /*
-            @DeleteMapping("/delete/{id}")
-            public ResponseEntity deleteUser (@PathVariable Integer id) {
-                try{
-                    logger.info("user deleted");
-                    userRepository.deleteById(id);
-                    return ResponseEntity.status(HttpStatus.OK).body("user successfully deleted ");
-                }catch (Exception e) {
-                    logger.warn(e.getMessage());
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-                }*/
-
+    @RequestMapping(value = "/{id}/download-profilePic", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity viewProfilePicture(@PathVariable Integer id){
+        try {
+            logger.info("Requested profile picture for user: " + id);
+            return ResponseEntity.ok(userService.getUserProfilePicture(id));
+        }catch (UserNotFoundException e){
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
+
+}
 
 
 

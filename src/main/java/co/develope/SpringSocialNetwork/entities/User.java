@@ -38,7 +38,8 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
-    private String profilePictureFilename;
+    @OneToOne
+    private Picture profilePicture;
 
     @OneToMany
     @JsonIgnore
@@ -139,12 +140,12 @@ public class User extends BaseEntity{
         this.password = password;
     }
 
-    public String getProfilePictureFilename() {
-        return profilePictureFilename;
+    public Picture getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfilePictureFilename(String profilePictureFilename) {
-        this.profilePictureFilename = profilePictureFilename;
+    public void setProfilePictureFilename(Picture profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public List<Post> getPosts() {

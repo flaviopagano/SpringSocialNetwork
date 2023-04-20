@@ -1,10 +1,10 @@
 package co.develope.SpringSocialNetwork.services;
 
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
+import co.develope.SpringSocialNetwork.entities.Picture;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
-import co.develope.SpringSocialNetwork.services.fileStorageServices.FileStorageService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,13 +41,6 @@ public class UserService {
             logger.warn("User with email " + user.getEmail() + " not found");
             throw new EmailAlreadyPresentException();
         }
-//        if(!user.getEmail().contains("@")){ //da aggiungere controlli
-//            throw new EmailNotValidException();
-//        }
-//        if(user.getPassword().contains("/")){ //da aggiungere controlli
-//            throw new PasswordNotValidException();
-//        }
-
 
         // Check if password contains special characters, then throw custom error
         if ((user.getPassword().contains("@") || user.getPassword().contains("#")
@@ -94,12 +89,9 @@ public class UserService {
             throw new EmailNotValidException();
         }
 
-
-
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         return new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword, user.getDateOfBirth(), user.getPlaceOfBirth());
     }
-
 
     public User getUserById(Integer id) throws UserNotFoundException {
         logger.info("User is trying to retrieve a user by id");
@@ -131,8 +123,6 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
-
-
     /*public ResponseEntity deleteUser (Integer id)  {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -143,25 +133,22 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }*/
 
-
-    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws Exception {
+    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
         Optional<User> optionalUser = userRepository.findById(userID);
-        if(optionalUser.isEmpty()) throw new Exception("user not found");
-        // fileStorageSerive.upload() assigns the file a name, save it into the hard disk and return the name
-        String fileName = fileStorageService.upload(profilePicture);
-        User user = optionalUser.get();
-        user.setProfilePictureFilename(fileName);
-       return  userRepository.save(user);
-
-
-        }
-
-    public byte[] getUserProfilePicture(Integer id) throws Exception {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isEmpty()) throw new Exception("Cannot find user " + id);
-        String fileName = optionalUser.get().getProfilePictureFilename();
-        return fileStorageService.download(fileName);
+        if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + userID + " not found");
+        String fileName = fileStorageService.upload(profilePicture, false);
+        Picture picture = new Picture(fileName);
+        optionalUser.get().setProfilePictureFilename(picture);
+        return userRepository.save(optionalUser.get());
     }
+
+    public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + id + " not found");
+        Picture profilePicture = optionalUser.get().getProfilePicture();
+        return fileStorageService.download(profilePicture.getFileName(), false);
+    }
+
 }
 
 

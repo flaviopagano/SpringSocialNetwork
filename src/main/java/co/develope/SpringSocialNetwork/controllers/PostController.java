@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,17 +42,17 @@ public class PostController {
      }
 
     @PostMapping(value = "/create-with-img", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile image){
+    public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile[] images){
         try {
-            postRepository.save(postService.createPostWithImage(postDTO,image));
-            logger.info("Creating a post with an image");
+            postRepository.save(postService.createPostWithImages(postDTO,images));
+            logger.info("Creating a post with some images");
             return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully!");
         } catch (UserNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IOException e) {
             logger.warn(e.getMessage());
-            throw new RuntimeException("image not found");
+            throw new RuntimeException("images not found");
         }
     }
 
@@ -61,7 +60,7 @@ public class PostController {
     @GetMapping("/get-post-by-id")
     public ResponseEntity getPostById(@RequestParam Integer postId){
         try {
-            logger.info("Getting comment with id "+postId);
+            logger.info("Getting comment with id " + postId);
             return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId));
         } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());

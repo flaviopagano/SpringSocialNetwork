@@ -11,8 +11,9 @@ import java.util.List;
 public class Post extends BaseEntity {
   private String text;
 
-  private String image;
-
+  @OneToMany
+  @JsonIgnore
+  private List<Picture> images;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -33,11 +34,11 @@ public class Post extends BaseEntity {
       this.text = text;
       this.userWhoPosts = userWhoPosts;
   }
-    public Post(String text, User userWhoPosts, String image) {
+    public Post(String text, User userWhoPosts, List<Picture> images) {
         super();
         this.text = text;
         this.userWhoPosts = userWhoPosts;
-        this.image = image;
+        this.images = images;
     }
 
 
@@ -73,4 +74,11 @@ public class Post extends BaseEntity {
       this.reactions = reactions;
   }
 
+    public List<Picture> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Picture> images) {
+        this.images = images;
+    }
 }
