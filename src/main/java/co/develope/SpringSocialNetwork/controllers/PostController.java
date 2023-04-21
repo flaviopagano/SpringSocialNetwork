@@ -56,7 +56,6 @@ public class PostController {
         }
     }
 
-
     @GetMapping("/get-post-by-id")
     public ResponseEntity getPostById(@RequestParam Integer postId){
         try {
@@ -65,6 +64,31 @@ public class PostController {
         } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-post-text-by-id")
+    public ResponseEntity getPostTextById(@RequestParam Integer postId){
+        try {
+            logger.info("Getting comment with id " + postId);
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostTextById(postId));
+        } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-post-image-by-id")
+    public ResponseEntity getPostImageById(@RequestParam Integer postId){
+        try {
+            logger.info("Getting comment with id " + postId);
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostImageById(postId));
+        } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

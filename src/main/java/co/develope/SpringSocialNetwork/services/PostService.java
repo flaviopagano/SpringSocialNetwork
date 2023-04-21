@@ -89,11 +89,34 @@ public class PostService {
         logger.warn("The user with id: "+userId+" has not been found");
         throw new UserNotFoundException("User with id: '" + userId + " not found");
     }
-    public Post getPostById(Integer id) throws PostNotFoundException {
+
+    public Post getPostById(Integer postId) throws PostNotFoundException {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if(optionalPost.isPresent()){
+            logger.info("Post with id: " + postId + " has been found");
+            return optionalPost.get();
+        }else{
+            logger.warn("Post with id: "  + postId + " has not been found");
+            throw new PostNotFoundException("Post with id: '" + postId + "' not found");
+        }
+    }
+
+    public String getPostTextById(Integer id) throws PostNotFoundException {
         Optional<Post> optionalPost = postRepository.findById(id);
         if(optionalPost.isPresent()){
             logger.info("Post with id: "+id+" has been found");
-            return optionalPost.get();
+            return optionalPost.get().getText();
+        }else{
+            logger.warn("Post with id: "  + id + " has not been found");
+            throw new PostNotFoundException("Post with id: '" + id + "' not found");
+        }
+    }
+
+    public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if(optionalPost.isPresent()){
+            logger.info("Post with id: " + id + " has been found");
+            return fileStorageService.download(optionalPost.get().getImages(), true);
         }else{
             logger.warn("Post with id: "  + id + " has not been found");
             throw new PostNotFoundException("Post with id: '" + id + "' not found");
