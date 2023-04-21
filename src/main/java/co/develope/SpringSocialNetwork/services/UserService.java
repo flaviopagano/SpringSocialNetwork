@@ -1,7 +1,6 @@
 package co.develope.SpringSocialNetwork.services;
 
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
-import co.develope.SpringSocialNetwork.entities.Picture;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -137,16 +135,15 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(userID);
         if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + userID + " not found");
         String fileName = fileStorageService.upload(profilePicture, false);
-        Picture picture = new Picture(fileName);
-        optionalUser.get().setProfilePictureFilename(picture);
+        optionalUser.get().setProfilePicture(fileName);
         return userRepository.save(optionalUser.get());
     }
 
     public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + id + " not found");
-        Picture profilePicture = optionalUser.get().getProfilePicture();
-        return fileStorageService.download(profilePicture.getFileName(), false);
+        String profilePicture = optionalUser.get().getProfilePicture();
+        return fileStorageService.download(profilePicture, false);
     }
 
 }

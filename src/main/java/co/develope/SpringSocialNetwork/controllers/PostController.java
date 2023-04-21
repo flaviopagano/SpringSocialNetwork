@@ -42,9 +42,9 @@ public class PostController {
      }
 
     @PostMapping(value = "/create-with-img", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile[] images){
+    public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile image){
         try {
-            postRepository.save(postService.createPostWithImages(postDTO,images));
+            postRepository.save(postService.createPostWithImages(postDTO,image));
             logger.info("Creating a post with some images");
             return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully!");
         } catch (UserNotFoundException e) {
@@ -52,7 +52,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IOException e) {
             logger.warn(e.getMessage());
-            throw new RuntimeException("images not found");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

@@ -66,14 +66,6 @@ public class FileStorageService {
 
     }
 
-    public List<String> uploadMany(MultipartFile[] files) throws IOException {
-        List<String> myFiles = new ArrayList<>();
-        for(int i = 0; i < files.length; i++){
-            myFiles.add(upload(files[i],true));
-        }
-        return myFiles;
-    }
-
     public byte[] download(String fileName, boolean isAPost) throws IOException {
         if(isAPost){
             File fileFromRepository = new File(getFileRepositoryFolderForPosts() + File.separator + fileName);
