@@ -13,7 +13,6 @@ public class Post extends BaseEntity {
 
   private String image;
 
-
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User userWhoPosts;
@@ -33,12 +32,12 @@ public class Post extends BaseEntity {
       this.text = text;
       this.userWhoPosts = userWhoPosts;
   }
-    public Post(String text, User userWhoPosts, String image) {
-        super();
-        this.text = text;
-        this.userWhoPosts = userWhoPosts;
-        this.image = image;
-    }
+  public Post(String text, User userWhoPosts, String images) {
+      super();
+      this.text = text;
+      this.userWhoPosts = userWhoPosts;
+      this.image = images;
+  }
 
 
   public String getText() {
@@ -73,4 +72,11 @@ public class Post extends BaseEntity {
       this.reactions = reactions;
   }
 
+    public String getImages() {
+        return image;
+    }
+
+    public void setImages(String images) {
+        this.image = images;
+    }
 }

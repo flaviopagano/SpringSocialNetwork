@@ -107,6 +107,7 @@ public class CommentController {
     @GetMapping("/{id}/get-publication-date")
     public ResponseEntity getPublicationDate(@PathVariable Integer id){
         try {
+            logger.info("Getting publication date");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getPublicationDate());
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
@@ -117,6 +118,7 @@ public class CommentController {
     @GetMapping("/{id}/get-update-date")
     public ResponseEntity getUpdateDate(@PathVariable Integer id){
         try {
+            logger.info("Getting update date");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getUpdateDate());
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
@@ -127,6 +129,7 @@ public class CommentController {
     @GetMapping("/{id}/get-user")
     public ResponseEntity getUserWhoComments(@PathVariable Integer id){
         try {
+            logger.info("Getting user who commented");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getUserWhoComments());
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
@@ -137,6 +140,7 @@ public class CommentController {
     @GetMapping("/{id}/get-post")
     public ResponseEntity getPostCommented(@PathVariable Integer id){
         try {
+            logger.info("Getting post commented");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getPostToComment());
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
