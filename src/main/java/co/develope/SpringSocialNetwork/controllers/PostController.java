@@ -78,7 +78,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/get-post-image-by-id")
+    @RequestMapping(value = "/get-post-image-by-id", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity getPostImageById(@RequestParam Integer postId){
         try {
             logger.info("Getting comment with id " + postId);
