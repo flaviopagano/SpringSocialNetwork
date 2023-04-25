@@ -25,9 +25,6 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
-    @Autowired
-    CommentRepository commentRepository;
-
     @PostMapping("/create")
     public ResponseEntity createComment(@RequestBody CommentDTO comment){
         try {
@@ -79,7 +76,7 @@ public class CommentController {
     @GetMapping
     public List<Comment> getAllComments(){
         logger.info("Getting all comments");
-        return commentRepository.findAll();
+        return commentService.getAll();
     }
 
     @PutMapping("update/{id}")

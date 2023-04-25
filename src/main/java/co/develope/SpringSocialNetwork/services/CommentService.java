@@ -26,36 +26,25 @@ public class CommentService {
     Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
-    PostRepository postRepository;
+    PostService postService;
 
     @Autowired
     CommentRepository commentRepository;
 
     public Comment createComment(CommentDTO comment) throws UserNotFoundException, PostNotFoundException{
         logger.info("Creating comment in service");
-        Optional<User> myUser = userRepository.findByUsername(comment.getUsername());
+        User myUser = userService.getUserByUsername(comment.getUsername());
         logger.info("User with username " + comment.getUsername() + " want to add a comment");
-        Optional<Post> myPost = postRepository.findById(comment.getPostId());
+        Post myPost = postService.getPostById(comment.getPostId());
         logger.info("To the post with id " + comment.getPostId());
-        if(myUser.isPresent()){
-            if(myPost.isPresent()){
-                Comment comm = new Comment(comment.getText(), myUser.get(), myPost.get());
-                myUser.get().getComments().add(comm);
-                myPost.get().getComments().add(comm);
-                logger.info("User " + comment.getUsername() + " added a comment to the post with id " +
-                        comment.getPostId());
-                return commentRepository.save(comm);
-            }else{
-                logger.warn("Post with id: '" + comment.getPostId() + "' not found");
-                throw new PostNotFoundException("Post with id: '" + comment.getPostId() + "' not found");
-            }
-        }else{
-            logger.warn("User with username: '" + comment.getUsername() + "' not found");
-            throw new UserNotFoundException("User with username: '" + comment.getUsername() + "' not found");
-        }
+        Comment comm = new Comment(comment.getText(), myUser, myPost);
+        myUser.getComments().add(comm);
+        myPost.getComments().add(comm);
+        logger.info("User " + comment.getUsername() + " added a comment to the post with id " + comment.getPostId());
+        return commentRepository.save(comm);
     }
 
     public Comment getCommentById(Integer id) throws CommentNotFoundException {
@@ -70,28 +59,23 @@ public class CommentService {
         }
     }
 
+    public List<Comment> getAll(){
+        logger.info("Trying to retrieve all comments");
+        return commentRepository.findAll();
+    }
+
     public List<Comment> getAllCommentsFromUser(Integer userId) throws UserNotFoundException {
         logger.info("Trying to retrieve all comments from user with id " + userId);
-        Optional<User> myUser = userRepository.findById(userId);
-        if(myUser.isPresent()){
-            logger.info("Retrieving successful");
-            return myUser.get().getComments();
-        }else{
-            logger.warn("User with id: '" + userId + "' not found");
-            throw new UserNotFoundException("User with id: '" + userId + "' not found");
-        }
+        User myUser = userService.getUserById(userId);
+        logger.info("Retrieving successful");
+        return myUser.getComments();
     }
 
     public List<Comment> getAllCommentsFromPost(Integer postId) throws PostNotFoundException {
         logger.info("Trying to retrieve all comments from post with id " + postId);
-        Optional<Post> myPost = postRepository.findById(postId);
-        if(myPost.isPresent()){
-            logger.info("Retrieving successful");
-            return myPost.get().getComments();
-        }else{
-            logger.warn("Post with id: '" + postId + "' not found");
-            throw new PostNotFoundException("Post with id: '" + postId + "' not found");
-        }
+        Post myPost = postService.getPostById(postId);
+        logger.info("Retrieving successful");
+        return myPost.getComments();
     }
 
     public Comment updateComment(Integer id, String text) throws CommentNotFoundException {

@@ -21,8 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/post")
 public class PostController {
-    @Autowired
-    PostRepository postRepository;
 
     @Autowired
     PostService postService;
@@ -32,9 +30,8 @@ public class PostController {
      @PostMapping("/create")
      public ResponseEntity createPost(@RequestBody PostDTO postDTO){
          try {
-             postRepository.save(postService.createPost(postDTO));
              logger.info("Creating post");
-             return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully!");
+             return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(postDTO));
          } catch (UserNotFoundException e) {
              logger.info(e.getMessage());
              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -44,9 +41,8 @@ public class PostController {
     @PostMapping(value = "/create-with-img", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile image){
         try {
-            postRepository.save(postService.createPostWithImages(postDTO,image));
             logger.info("Creating a post with some images");
-            return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPostWithImages(postDTO,image));
         } catch (UserNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -95,14 +91,14 @@ public class PostController {
     @GetMapping("/get-all")
     public List<Post> getPostById(){
          logger.info("Getting all posts");
-        return postRepository.findAll();
+         return postService.getAllPosts();
     }
 
 
     @GetMapping("/get-all-by-user-id")
     public ResponseEntity getAllPostsFromUser(@RequestParam Integer userId){
         try {
-            logger.info("Getting all posts from user with id: "+userId);
+            logger.info("Getting all posts from user with id: " + userId);
             return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostsFromUserId(userId));
         } catch (UserNotFoundException e) {
             logger.warn(e.getMessage());
@@ -119,7 +115,7 @@ public class PostController {
     public ResponseEntity editPost(@RequestParam Integer postId, @RequestBody String text){
         try{
         logger.info("Editing post");
-        return postService.editPostById(postId,text);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(postService.editPostById(postId,text));
         }catch (PostNotFoundException e){
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

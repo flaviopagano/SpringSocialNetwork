@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -27,82 +29,42 @@ public class UserService {
     @Autowired
     FileStorageService fileStorageService;
 
-    /** forse il parametro sarebbe meglio chiamarlo UserDTO userDTO) altrimenti riga 40 e' confusionaria */
-    public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException, EmailNotValidException, PasswordNotValidException {
-        logger.info("Trying to retrieve User from DTO by username");
+    public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException,
+            EmailNotValidException, PasswordNotValidException {
+        logger.info("Trying to create User from DTO");
+
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
-            logger.warn("User with username " + user.getUsername() + " not found");
+            logger.warn("Username: '" + user.getUsername() + "' already present");
             throw new UsernameAlreadyPresentException("Username: '" + user.getUsername() + "' already present");
         }
-        logger.info("Trying to retrieve User from DTO by email");
+
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
-            logger.warn("User with email " + user.getEmail() + " not found");
+            logger.warn("Email: '" + user.getEmail() + "' already present");
             throw new EmailAlreadyPresentException();
         }
-//        if(!user.getEmail().contains("@")){ //da aggiungere controlli
-//            throw new EmailNotValidException();
-//        }
-//        if(user.getPassword().contains("/")){ //da aggiungere controlli
-//            throw new PasswordNotValidException();
-//        }
-
 
         // Check if password contains special characters, then throw custom error
-        if ((user.getPassword().contains("@") || user.getPassword().contains("#")
-                || user.getPassword().contains("!") || user.getPassword().contains("~")
-                || user.getPassword().contains("$") || user.getPassword().contains("%")
-                || user.getPassword().contains("^") || user.getPassword().contains("&")
-                || user.getPassword().contains("*") || user.getPassword().contains("(")
-                || user.getPassword().contains(")") || user.getPassword().contains("-")
-                || user.getPassword().contains("+") || user.getPassword().contains("/")
-                || user.getPassword().contains(":") || user.getPassword().contains(".")
-                || user.getPassword().contains(", ") || user.getPassword().contains("<")
-                || user.getPassword().contains(">") || user.getPassword().contains("?")
-                || user.getPassword().contains("|"))) {
-                logger.warn("Invalid Password: special characters not allowed");
+        if (!isValidPassword(user.getPassword()) || user.getPassword().contains(" ")) {
+            logger.warn("Invalid Password");
             throw new PasswordNotValidException();
         }
-
-        //  Check if password length
-        //  is between 8 and 15 characters
-        if (!((user.getPassword().length() >= 8)
-                && (user.getPassword().length() <= 15))) {
-            logger.warn("Invalid Password: must be between 8 and 15 characters");
-            throw new PasswordNotValidException();
-        }
-
-        // to check space
-        if (user.getPassword().contains(" ")) {
-            logger.warn("Invalid Password: space not allowed");
-            throw new PasswordNotValidException();
-        }
-
 
         // Check if email contains special characters, then throw custom error
-        if ((user.getEmail().contains(",")
-                || user.getEmail().contains("!") || user.getEmail().contains("~")
-                || user.getEmail().contains("$") || user.getEmail().contains("%")
-                || user.getEmail().contains("^") || user.getEmail().contains("&")
-                || user.getEmail().contains("*") || user.getEmail().contains("(")
-                || user.getEmail().contains(")") || user.getEmail().contains("-")
-                || user.getEmail().contains("+") || user.getEmail().contains("/")
-                || user.getEmail().contains(":") || user.getEmail().contains("#")
-                || user.getEmail().contains(", ") || user.getEmail().contains("<")
-                || user.getEmail().contains(">") || user.getEmail().contains("?")
-                || user.getEmail().contains("|"))) {
-                logger.warn("Invalid Email: special characters are not allowed");
+        if(patternMatches(user.getEmail(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]" +
+                "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
+            logger.warn("Invalid Email");
             throw new EmailNotValidException();
         }
 
-
-
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        return new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword, user.getDateOfBirth(), user.getPlaceOfBirth());
+        User userDone = new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword,
+                user.getDateOfBirth(), user.getPlaceOfBirth());
+        return userRepository.save(userDone);
     }
 
 
     public User getUserById(Integer id) throws UserNotFoundException {
-        logger.info("User is trying to retrieve a user by id");
+        logger.info("Trying to retrieve a user by id");
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             logger.info("Retrieving successful");
@@ -113,14 +75,26 @@ public class UserService {
         }
     }
 
-    public User updateAllUser(Integer id, UserDTO user) throws UserNotFoundException {
-        logger.info("User is trying to update");
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            logger.warn("User " + id + " does not exist");
-            throw new UserNotFoundException("User with id: '" + id + "' not found");
+    public User getUserByUsername(String username) throws UserNotFoundException {
+        logger.info("Trying to retrieve a user by id");
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            logger.info("Retrieving successful");
+            return optionalUser.get();
+        } else {
+            logger.warn("User with username '" + username + "' not found");
+            throw new UserNotFoundException("User with id: '" + username + "' not found");
         }
-        User userToUpdate = optionalUser.get();
+    }
+
+    public List<User> getAll(){
+        logger.info("Retrieving all users from database");
+        return userRepository.findAll();
+    }
+
+    public User updateAllUser(Integer id, UserDTO user) throws UserNotFoundException {
+        logger.info("Trying to update a user");
+        User userToUpdate = getUserById(id);
         userToUpdate.setName(user.getName());
         userToUpdate.setSurname(user.getSurname());
         userToUpdate.setUsername(user.getUsername());
@@ -130,8 +104,6 @@ public class UserService {
         logger.info("Update successful");
         return userRepository.save(userToUpdate);
     }
-
-
 
     /*public ResponseEntity deleteUser (Integer id)  {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -145,19 +117,52 @@ public class UserService {
 
 
     public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
-        Optional<User> optionalUser = userRepository.findById(userID);
-        if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + userID + " not found");
+        User user = getUserById(userID);
         String fileName = fileStorageService.upload(profilePicture, false);
-        optionalUser.get().setProfilePicture(fileName);
-        return userRepository.save(optionalUser.get());
+        user.setProfilePicture(fileName);
+        return userRepository.save(user);
     }
 
     public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isEmpty()) throw new UserNotFoundException("User with id " + id + " not found");
-        String profilePicture = optionalUser.get().getProfilePicture();
+        User user = getUserById(id);
+        String profilePicture = user.getProfilePicture();
         return fileStorageService.download(profilePicture, false);
     }
+
+    private boolean patternMatches(String text, String regexPattern) {
+        return Pattern.compile(regexPattern).matcher(text).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+
+        if (password.length() < 8 || password.length() > 15) return false;
+
+        int charCount = 0;
+        int numCount = 0;
+        for (int i = 0; i < password.length(); i++) {
+
+            char ch = password.charAt(i);
+
+            if (is_Numeric(ch)) numCount++;
+            else if (is_Letter(ch)) charCount++;
+            else return false;
+        }
+
+
+        return (charCount >= 2 && numCount >= 2);
+    }
+
+    private boolean is_Letter(char ch) {
+        ch = Character.toUpperCase(ch);
+        return (ch >= 'A' && ch <= 'Z');
+    }
+
+
+    private boolean is_Numeric(char ch) {
+
+        return (ch >= '0' && ch <= '9');
+    }
+
 }
 
 

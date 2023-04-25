@@ -27,7 +27,7 @@ public class PostService {
     PostRepository postRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     FileStorageService fileStorageService;
@@ -38,57 +38,23 @@ public class PostService {
 
      public Post createPost(PostDTO postDTO) throws UserNotFoundException {
          logger.info(postDTO.getUsername() + " is trying to create a post");
-         Optional<User> myUser = userRepository.findByUsername(postDTO.getUsername());
-         if(myUser.isPresent()){
-             logger.info(postDTO.getUsername() + " has created a post");
-             return new Post(postDTO.getText(),myUser.get());
-         }else{
-             logger.warn(postDTO.getUsername() + " has not been found");
-             throw new UserNotFoundException("User with username: '" + postDTO.getUsername() + "' not found");
-         }
+         User myUser = userService.getUserByUsername(postDTO.getUsername());
+         logger.info(postDTO.getUsername() + " has created a post");
+         Post post = new Post(postDTO.getText(),myUser);
+         logger.info("Saving post in the database");
+         return postRepository.save(post);
      }
+
      public Post createPostWithImages(PostDTO postDTO, MultipartFile image) throws UserNotFoundException, IOException {
-         Optional<User> myUser = userRepository.findByUsername(postDTO.getUsername());
-         if(myUser.isPresent()){
-             logger.info(postDTO.getUsername() + " is trying to create a post with an image");
-             logger.info("Uploading image");
-             String postImage = fileStorageService.upload(image, true);
-             logger.info("Image uploaded");
-             Post post = new Post(postDTO.getText(), myUser.get(), postImage);
-             logger.info("Post created");
-             return post;
-         }else{
-             logger.warn(postDTO.getUsername() + " has not been found");
-             throw new UserNotFoundException("User with username: '" + postDTO.getUsername() + "' not found");
-         }
+         logger.info(postDTO.getUsername() + " is trying to create a post with an image");
+         User myUser = userService.getUserByUsername(postDTO.getUsername());
+         logger.info("Uploading image");
+         String postImage = fileStorageService.upload(image, true);
+         logger.info("Image uploaded");
+         Post post = new Post(postDTO.getText(), myUser, postImage);
+         logger.info("Post created");
+         return postRepository.save(post);
      }
-
-    public ResponseEntity editPostById(Integer postId, String text) throws PostNotFoundException{
-        Optional<Post> myPost = postRepository.findById(postId);
-        if(myPost.isPresent()){
-            logger.info("The post to edit with id "+postId+" has been found");
-            Post post = myPost.get();
-            post.setText(text);
-            post.setUpdateDate(LocalDateTime.now());
-            logger.info("The post with id "+postId+" has been edited");
-            postRepository.save(post);
-            logger.info("The edit of post "+postId+" has been saved");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("The post has been edited");
-        }else {
-            logger.warn("The post to edit with id " + postId + " has not been found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post has not been found");
-        }
-    }
-
-    public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isPresent()){
-            logger.info("Retrieving all posts from "+optionalUser);
-            return postRepository.findByUserWhoPosts_Id(userId);
-        }
-        logger.warn("The user with id: "+userId+" has not been found");
-        throw new UserNotFoundException("User with id: '" + userId + " not found");
-    }
 
     public Post getPostById(Integer postId) throws PostNotFoundException {
         Optional<Post> optionalPost = postRepository.findById(postId);
@@ -101,26 +67,38 @@ public class PostService {
         }
     }
 
+    public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
+        logger.info("Retrieving all posts from user with id " + userId);
+        User myUser = userService.getUserById(userId);
+        return myUser.getPosts();
+    }
+
     public String getPostTextById(Integer id) throws PostNotFoundException {
-        Optional<Post> optionalPost = postRepository.findById(id);
-        if(optionalPost.isPresent()){
-            logger.info("Post with id: "+id+" has been found");
-            return optionalPost.get().getText();
-        }else{
-            logger.warn("Post with id: "  + id + " has not been found");
-            throw new PostNotFoundException("Post with id: '" + id + "' not found");
-        }
+        logger.info("Retrieving the text from post with id " + id);
+         Post myPost = getPostById(id);
+         return myPost.getText();
     }
 
     public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
-        Optional<Post> optionalPost = postRepository.findById(id);
-        if(optionalPost.isPresent()){
-            logger.info("Post with id: " + id + " has been found");
-            return fileStorageService.download(optionalPost.get().getImages(), true);
-        }else{
-            logger.warn("Post with id: "  + id + " has not been found");
-            throw new PostNotFoundException("Post with id: '" + id + "' not found");
-        }
+        logger.info("Retrieving the image from post with id " + id);
+         Post myPost = getPostById(id);
+         return fileStorageService.download(myPost.getImages(), true);
+    }
+
+    public List<Post> getAllPosts(){
+         logger.info("Retrieving all the posts from database");
+         return postRepository.findAll();
+    }
+
+    public Post editPostById(Integer postId, String text) throws PostNotFoundException{
+        Post myPost = getPostById(postId);
+        logger.info("The post to edit with id " + postId + " has been found");
+        myPost.setText(text);
+        myPost.setUpdateDate(LocalDateTime.now());
+        logger.info("The post with id " + postId + " has been edited");
+        postRepository.save(myPost);
+        logger.info("The edit of post " + postId + " has been saved");
+        return myPost;
     }
 
     /**non funziona - come fare delete nelle many-to-many? **/
@@ -136,12 +114,5 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
     }
 */
-
-
-
-
-
-
-
 
 }
