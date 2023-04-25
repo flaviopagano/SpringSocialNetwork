@@ -14,6 +14,4 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer> {
 
-    List<Post> findByUserWhoPosts_Id(Integer userId);
-
 }

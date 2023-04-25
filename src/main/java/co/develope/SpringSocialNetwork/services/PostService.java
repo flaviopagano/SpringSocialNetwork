@@ -45,7 +45,7 @@ public class PostService {
          return postRepository.save(post);
      }
 
-     public Post createPostWithImages(PostDTO postDTO, MultipartFile image) throws UserNotFoundException, IOException {
+     public Post createPostWithImage(PostDTO postDTO, MultipartFile image) throws UserNotFoundException, IOException {
          logger.info(postDTO.getUsername() + " is trying to create a post with an image");
          User myUser = userService.getUserByUsername(postDTO.getUsername());
          logger.info("Uploading image");
@@ -73,16 +73,10 @@ public class PostService {
         return myUser.getPosts();
     }
 
-    public String getPostTextById(Integer id) throws PostNotFoundException {
-        logger.info("Retrieving the text from post with id " + id);
-         Post myPost = getPostById(id);
-         return myPost.getText();
-    }
-
     public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
         logger.info("Retrieving the image from post with id " + id);
-         Post myPost = getPostById(id);
-         return fileStorageService.download(myPost.getImages(), true);
+        Post myPost = getPostById(id);
+        return fileStorageService.download(myPost.getImages(), true);
     }
 
     public List<Post> getAllPosts(){
@@ -90,7 +84,7 @@ public class PostService {
          return postRepository.findAll();
     }
 
-    public Post editPostById(Integer postId, String text) throws PostNotFoundException{
+    public Post editPostTextById(Integer postId, String text) throws PostNotFoundException{
         Post myPost = getPostById(postId);
         logger.info("The post to edit with id " + postId + " has been found");
         myPost.setText(text);
@@ -100,6 +94,20 @@ public class PostService {
         logger.info("The edit of post " + postId + " has been saved");
         return myPost;
     }
+
+    /**
+     * ancora da fare e capire bene come farlo
+     */
+    /*public Post editPostImageById(Integer postId, MultipartFile file) throws PostNotFoundException {
+        Post myPost = getPostById(postId);
+        logger.info("The post to edit with id " + postId + " has been found");
+        myPost.setImages();
+        myPost.setUpdateDate(LocalDateTime.now());
+        logger.info("The post with id " + postId + " has been edited");
+        postRepository.save(myPost);
+        logger.info("The edit of post " + postId + " has been saved");
+        return myPost;
+    }*/
 
     /**non funziona - come fare delete nelle many-to-many? **/
     /*public ResponseEntity deletePostById(Integer id){
