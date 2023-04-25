@@ -129,6 +129,14 @@ public class UserService {
         return fileStorageService.download(profilePicture, false);
     }
 
+    /**come fare encrypt e decrypt password al meglio**/
+    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
+        User user = getUserById(id);
+        String encryptedPassword = user.getPassword();
+        String password =
+        return password;
+    }*/
+
     private boolean patternMatches(String text, String regexPattern) {
         return Pattern.compile(regexPattern).matcher(text).matches();
     }

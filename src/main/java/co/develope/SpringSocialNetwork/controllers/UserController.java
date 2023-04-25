@@ -46,34 +46,6 @@ public class UserController {
         }
     }
 
-    @GetMapping
-    public List<User> getUserList() {
-        logger.info("Retrieving all users from db");
-        return userService.getAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity getUser(@PathVariable Integer id) {
-        try {
-            logger.info("User selected by id ");
-            return ResponseEntity.ok().body(userService.getUserById(id));
-        } catch (UserNotFoundException e) {
-            logger.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
-        try {
-            logger.info("User updated successfully");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
-        } catch (UserNotFoundException e) {
-            logger.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @PostMapping("/{id}/upload-profile")
     public ResponseEntity uploadProfilePicture(@PathVariable Integer id, @RequestParam MultipartFile profilePicture) {
         try {
@@ -88,6 +60,166 @@ public class UserController {
         }
     }
 
+    @GetMapping
+    public List<User> getUserList() {
+        logger.info("Retrieving all users from db");
+        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-creation-date")
+    public ResponseEntity getUserCreationDate(@PathVariable Integer id) {
+        try {
+            logger.info("Getting creation date of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getPublicationDate());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-update-date")
+    public ResponseEntity getUserLastUpdateDate(@PathVariable Integer id) {
+        try {
+            logger.info("Getting update date of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getUpdateDate());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-name")
+    public ResponseEntity getNameOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting name of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getName());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-surname")
+    public ResponseEntity getSurnameOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting surname of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getSurname());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-username")
+    public ResponseEntity getUsernameOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting username of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getUsername());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-birth-date")
+    public ResponseEntity getBirthDateOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting birth date of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getDateOfBirth());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-place-of-birth")
+    public ResponseEntity getPlaceOfBirthOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting place of birth of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getPlaceOfBirth());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-email")
+    public ResponseEntity getEmailOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting email of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getEmail());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    /*@GetMapping("/{id}/get-password")
+    public ResponseEntity getPasswordOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting password of the user with id " + id);
+            return ResponseEntity.ok().body(userService.getAndDecryptPassword(id));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }*/
+
+    @GetMapping("/{id}/get-posts")
+    public ResponseEntity getPostsOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting posts of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getPosts());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-comments")
+    public ResponseEntity getCommentsOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting comments of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getComments());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-reactions")
+    public ResponseEntity getReactionsOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting reactions of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getReactions());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-friends")
+    public ResponseEntity getFriendsOfTheUser(@PathVariable Integer id) {
+        try {
+            logger.info("Getting friends of user with id " + id);
+            return ResponseEntity.ok().body(userService.getUserById(id).getFriendList());
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/{id}/download-profilePic", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity viewProfilePicture(@PathVariable Integer id){
         try {
@@ -99,6 +231,17 @@ public class UserController {
         } catch (IOException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
