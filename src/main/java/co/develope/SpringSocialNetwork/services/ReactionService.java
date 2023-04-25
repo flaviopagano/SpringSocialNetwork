@@ -6,6 +6,7 @@ import co.develope.SpringSocialNetwork.entities.Reaction;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.enums.ReactionType;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
@@ -29,33 +30,23 @@ public class ReactionService {
     private ReactionRepository reactionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
     private Reaction addReaction(ReactionDTO reaction, ReactionType reactionType) throws PostNotFoundException, UserNotFoundException {
         logger.info("Adding Reaction");
-        Optional<User> myUser = userRepository.findByUsername(reaction.getUsername());
+        User myUser = userService.getUserByUsername(reaction.getUsername());
         logger.info("User with username " + reaction.getUsername() + " want to add a reaction");
-        Optional<Post> myPost = postRepository.findById(reaction.getPostId());
+        Post myPost = postService.getPostById(reaction.getPostId());
         logger.info("To the post with id " + reaction.getPostId());
-        if(myUser.isPresent()){
-            if(myPost.isPresent()){
-                Reaction reactionNew = new Reaction(myPost.get(), myUser.get(), reactionType);
-                myUser.get().getReactions().add(reactionNew);
-                myPost.get().getReactions().add(reactionNew);
-                logger.info("User " + reaction.getUsername() + " added an " + reactionType + " reaction to the post with id " +
-                        reaction.getPostId());
-                return reactionRepository.save(reactionNew);
-            } else {
-                logger.warn("Post with id: '" + reaction.getPostId() + "' not found");
-                throw new PostNotFoundException("Post with id: '" + reaction.getPostId() + "' not found");
-            }
-        } else{
-            logger.warn("User with username: '" + reaction.getUsername() + "' not found");
-            throw new UserNotFoundException("User with username: '" + reaction.getUsername() + "' not found");
-        }
+        Reaction reactionNew = new Reaction(myPost, myUser, reactionType);
+        myUser.getReactions().add(reactionNew);
+        myPost.getReactions().add(reactionNew);
+        logger.info("User " + reaction.getUsername() + " added an " + reactionType + " reaction to the post with id " +
+                reaction.getPostId());
+        return reactionRepository.save(reactionNew);
     }
 
     public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
@@ -86,30 +77,34 @@ public class ReactionService {
         return addReaction(reaction, ReactionType.CRYING);
     }
 
-    public List<Reaction> getAllReactionsFromPost (Integer postId) throws PostNotFoundException {
-        logger.info("Trying to retrieve all reactions");
-        Optional<Post> post = postRepository.findById(postId);
-        if(post.isPresent()){
-            logger.info("Retrieving successful");
-            return post.get().getReactions();
-        } else{
-            logger.warn("Post with id: '" + postId + "' not found");
-            throw new PostNotFoundException("Post with id: '" + postId + "' not found");
+    public Reaction getReactionById(Integer id) throws ReactionNotFoundException {
+        Optional<Reaction> reaction = reactionRepository.findById(id);
+        if(reaction.isEmpty()){
+            logger.info("Reaction not found");
+            throw new ReactionNotFoundException("Reaction with id '" + id + "' not found");
+        }else{
+            return reaction.get();
         }
     }
 
-    public ResponseEntity deleteReactionById(Integer id){
-        logger.info("User wants to delete the reaction with id " + id);
-        Optional<Reaction> reaction = reactionRepository.findById(id);
-        if(reaction.isPresent()){
-            reaction.get().getPostToReact().getReactions().remove(reaction.get());
-            reaction.get().getUserWhoReacts().getReactions().remove(reaction.get());
-            reactionRepository.deleteById(id);
-            logger.info("Reaction deleted successfully");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
-        }
-        logger.info("Reaction not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reaction not found");
+    public List<Reaction> getAllReactionsFromPost (Integer postId) throws PostNotFoundException {
+        logger.info("Trying to retrieve all reactions from post");
+        Post myPost = postService.getPostById(postId);
+        logger.info("Retrieving successful");
+        return myPost.getReactions();
+    }
 
+    public List<Reaction> getAllReactions(){
+        return reactionRepository.findAll();
+    }
+
+    public ResponseEntity deleteReactionById(Integer id) throws ReactionNotFoundException {
+        logger.info("User wants to delete the reaction with id " + id);
+        Reaction reaction = getReactionById(id);
+        reaction.getPostToReact().getReactions().remove(reaction);
+        reaction.getUserWhoReacts().getReactions().remove(reaction);
+        reactionRepository.deleteById(id);
+        logger.info("Reaction deleted successfully");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
     }
 }

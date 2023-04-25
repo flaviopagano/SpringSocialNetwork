@@ -3,6 +3,7 @@ package co.develope.SpringSocialNetwork.controllers;
 import co.develope.SpringSocialNetwork.entities.DTO.ReactionDTO;
 import co.develope.SpringSocialNetwork.entities.Reaction;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
 import co.develope.SpringSocialNetwork.services.ReactionService;
@@ -23,9 +24,6 @@ public class ReactionController {
 
     @Autowired
     private ReactionService reactionService;
-
-    @Autowired
-    private ReactionRepository reactionRepository;
 
     @PostMapping("/create/loving")
     public ResponseEntity createLovingReaction (@RequestBody ReactionDTO reaction) {
@@ -135,13 +133,18 @@ public class ReactionController {
     @GetMapping("/get-all-reactions")
     public List<Reaction> getAllReactionFromPost(){
         logger.info("Getting all reactions from a post");
-        return reactionRepository.findAll();
+        return reactionService.getAllReactions();
     }
 
     @DeleteMapping("/delete-reaction/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
-        logger.info("User want to delete reaction with id " + id);
-        reactionService.deleteReactionById(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted!");
+        try {
+            logger.info("User want to delete reaction with id " + id);
+            reactionService.deleteReactionById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted!");
+        } catch (ReactionNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
