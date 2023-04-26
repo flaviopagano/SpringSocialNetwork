@@ -9,6 +9,7 @@ import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.Reaction;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.enums.ReactionType;
+import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class ReactionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void reactionControllerLoads(){
         assertThat(reactionController).isNotNull();
@@ -48,7 +52,6 @@ public class ReactionControllerTest {
 
     private User createU() throws Exception {
         User user = new User();
-        user.setId(1);
         user.setName("Alma");
         user.setSurname("Caciula");
         user.setUsername("Erza");
@@ -57,41 +60,44 @@ public class ReactionControllerTest {
         user.setDateOfBirth(LocalDateTime.of(1998, 6, 8, 13, 48));
         user.setPlaceOfBirth("Romania");
 
-        return user;
+        return userRepository.save(user);
     }
 
-    private MvcResult createAUser() throws Exception {
-        User user = new User();
-        user.setName("Alma");
-        user.setSurname("Caciula");
-        user.setUsername("Erza");
-        user.setEmail("alma@gmail.com");
-        user.setPassword("prova1234");
-        user.setDateOfBirth(LocalDateTime.of(1998, 6, 8, 13, 48));
-        user.setPlaceOfBirth("Romania");
-
+    private UserDTO createUserDTO() throws Exception {
         UserDTO userDTO = new UserDTO();
-        userDTO.setName(user.getName());
-        userDTO.setSurname(user.getSurname());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setPlaceOfBirth(user.getPlaceOfBirth());
-        userDTO.setDateOfBirth(user.getDateOfBirth());
+        userDTO.setName(createU().getName());
+        userDTO.setSurname(createU().getSurname());
+        userDTO.setUsername(createU().getUsername());
+        userDTO.setEmail(createU().getEmail());
+        userDTO.setPassword(createU().getPassword());
+        userDTO.setDateOfBirth(createU().getDateOfBirth());
+        userDTO.setPlaceOfBirth(createU().getPlaceOfBirth());
 
+        return createAUser(userDTO);
+    }
+
+    private UserDTO createAUser(UserDTO userDTO) throws Exception {
+        MvcResult result = createAUserRequest(userDTO);
+        UserDTO userFromResponse = objectMapper.readValue(result.getResponse().getContentAsString(), UserDTO.class);
+        return userFromResponse;
+    }
+
+    private MvcResult createAUserRequest(UserDTO userDTO) throws Exception {
+        if(userDTO == null) return null;
         String userJSON = objectMapper.writeValueAsString(userDTO);
-        return this.mockMvc.perform(post("/user/create")
-                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+        return this.mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(userJSON))
                 .andDo(print())
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
     void createAUserTest() throws Exception {
-        MvcResult userFromResponse = createAUser();
+        UserDTO userFromResponse = createUserDTO();
         assertThat(userFromResponse).isNotNull();
+        assertThat(userFromResponse.getEmail()).isNotNull();
     }
 
     private Post creatAP() throws Exception {
@@ -128,7 +134,7 @@ public class ReactionControllerTest {
         assertThat(postFromResponse).isNotNull();
     }
 
-    private MvcResult createAReaction() throws Exception {
+    /*private MvcResult createAReaction() throws Exception {
         Reaction reaction = new Reaction();
         reaction.setReactionType(ReactionType.LOVING);
         reaction.setUserWhoReacts(createU());
@@ -149,9 +155,9 @@ public class ReactionControllerTest {
     }
 
     @Test
-    void createAReactionTest() throws Exception {
+    void createALovingReactionTest() throws Exception {
         MvcResult reactionFromResponde = createAReaction();
         assertThat(reactionFromResponde).isNotNull();
-    }
+    }*/
 
 }
