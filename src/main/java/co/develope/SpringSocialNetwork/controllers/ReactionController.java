@@ -3,6 +3,7 @@ package co.develope.SpringSocialNetwork.controllers;
 import co.develope.SpringSocialNetwork.entities.DTO.ReactionDTO;
 import co.develope.SpringSocialNetwork.entities.Reaction;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
 import co.develope.SpringSocialNetwork.services.ReactionService;
@@ -140,8 +141,12 @@ public class ReactionController {
 
     @DeleteMapping("/delete-reaction/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
-        logger.info("User want to delete reaction with id " + id);
-        reactionService.deleteReactionById(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted!");
+        try {
+            logger.info("User want to delete reaction with id " + id);
+            return reactionService.deleteReactionById(id);
+        } catch (ReactionNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

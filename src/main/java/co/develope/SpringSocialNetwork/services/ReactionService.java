@@ -1,11 +1,14 @@
 package co.develope.SpringSocialNetwork.services;
 
+import co.develope.SpringSocialNetwork.entities.Comment;
 import co.develope.SpringSocialNetwork.entities.DTO.ReactionDTO;
 import co.develope.SpringSocialNetwork.entities.Post;
 import co.develope.SpringSocialNetwork.entities.Reaction;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.enums.ReactionType;
+import co.develope.SpringSocialNetwork.exceptions.CommentNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
+import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
@@ -58,6 +61,18 @@ public class ReactionService {
         }
     }
 
+    public Reaction getReactionById(Integer id) throws ReactionNotFoundException {
+        logger.info("Trying to find reaction with id " + id);
+        Optional<Reaction> reaction = reactionRepository.findById(id);
+        if(reaction.isPresent()){
+            logger.info("Retrieving successful");
+            return reaction.get();
+        }else{
+            logger.warn("Reaction with id " + id + " not found");
+            throw new ReactionNotFoundException("Reaction with id: '" + id + "' not found");
+        }
+    }
+
     public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
         return addReaction(reaction, ReactionType.LOVING);
     }
@@ -98,18 +113,14 @@ public class ReactionService {
         }
     }
 
-    public ResponseEntity deleteReactionById(Integer id){
+    public ResponseEntity deleteReactionById(Integer id) throws ReactionNotFoundException {
         logger.info("User wants to delete the reaction with id " + id);
-        Optional<Reaction> reaction = reactionRepository.findById(id);
-        if(reaction.isPresent()){
-            reaction.get().getPostToReact().getReactions().remove(reaction.get());
-            reaction.get().getUserWhoReacts().getReactions().remove(reaction.get());
-            reactionRepository.deleteById(id);
-            logger.info("Reaction deleted successfully");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
-        }
-        logger.info("Reaction not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reaction not found");
+        Reaction reaction = getReactionById(id);
+        reaction.getPostToReact().getReactions().remove(reaction);
+        reaction.getUserWhoReacts().getReactions().remove(reaction);
+        reactionRepository.deleteById(id);
+        logger.info("Reaction deleted successfully");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
 
     }
 }
