@@ -166,7 +166,7 @@ public class PostController {
     } */
 
     @PutMapping("/edit-text-by-id")
-    public ResponseEntity editPost(@RequestParam Integer postId, @RequestBody String text){
+    public ResponseEntity editPost(@RequestParam Integer postId, @RequestParam String text){
         try{
         logger.info("Editing post");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(postService.editPostTextById(postId,text));

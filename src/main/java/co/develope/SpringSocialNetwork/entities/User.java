@@ -24,12 +24,10 @@ public class User extends BaseEntity{
      * tempo il constraint
      * Vedi anche se conviene usare Date o LocalDateTime **/
 
-    @Column//(nullable = false)
-    // ho cambiato "Date" in "LocalDateTime" perchè pare sia una
-    // libreria di Java più recente e più versatile
+    @Column
     private LocalDateTime dateOfBirth;
 
-    @Column//(nullable = false)
+    @Column
     private String placeOfBirth;
 
     @Column(unique = true, nullable = false)

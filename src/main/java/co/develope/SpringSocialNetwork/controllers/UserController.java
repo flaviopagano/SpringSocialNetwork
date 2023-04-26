@@ -176,6 +176,7 @@ public class UserController {
         }
     }*/
 
+    //non funziona, perchè?
     @GetMapping("/{id}/get-posts")
     public ResponseEntity getPostsOfTheUser(@PathVariable Integer id) {
         try {

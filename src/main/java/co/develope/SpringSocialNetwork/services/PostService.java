@@ -41,6 +41,7 @@ public class PostService {
          User myUser = userService.getUserByUsername(postDTO.getUsername());
          logger.info(postDTO.getUsername() + " has created a post");
          Post post = new Post(postDTO.getText(),myUser);
+         myUser.getPosts().add(post);
          logger.info("Saving post in the database");
          return postRepository.save(post);
      }
@@ -53,6 +54,7 @@ public class PostService {
          logger.info("Image uploaded");
          Post post = new Post(postDTO.getText(), myUser, postImage);
          logger.info("Post created");
+         myUser.getPosts().add(post);
          return postRepository.save(post);
      }
 

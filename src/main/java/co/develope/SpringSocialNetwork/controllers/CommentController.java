@@ -79,7 +79,7 @@ public class CommentController {
         return commentService.getAll();
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity updateComment(@PathVariable Integer id, @RequestParam String text){
         try {
             logger.info("Updating comment");
