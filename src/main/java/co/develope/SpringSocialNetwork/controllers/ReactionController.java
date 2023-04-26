@@ -25,6 +25,9 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
+    @Autowired
+    private ReactionRepository reactionRepository;
+
     @PostMapping("/create/loving")
     public ResponseEntity createLovingReaction (@RequestBody ReactionDTO reaction) {
         try {
@@ -133,15 +136,14 @@ public class ReactionController {
     @GetMapping("/get-all-reactions")
     public List<Reaction> getAllReactionFromPost(){
         logger.info("Getting all reactions from a post");
-        return reactionService.getAllReactions();
+        return reactionRepository.findAll();
     }
 
     @DeleteMapping("/delete-reaction/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
+        logger.info("User want to delete reaction with id " + id);
         try {
-            logger.info("User want to delete reaction with id " + id);
-            reactionService.deleteReactionById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted!");
+            return reactionService.deleteReactionById(id);
         } catch (ReactionNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

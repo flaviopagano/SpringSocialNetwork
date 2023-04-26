@@ -5,5 +5,4 @@ public class ReactionNotFoundException extends Exception{
     public ReactionNotFoundException(String message){
         super(message);
     }
-
 }

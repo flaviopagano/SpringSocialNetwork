@@ -8,9 +8,7 @@ import co.develope.SpringSocialNetwork.enums.ReactionType;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.repositories.PostRepository;
 import co.develope.SpringSocialNetwork.repositories.ReactionRepository;
-import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +45,18 @@ public class ReactionService {
         logger.info("User " + reaction.getUsername() + " added an " + reactionType + " reaction to the post with id " +
                 reaction.getPostId());
         return reactionRepository.save(reactionNew);
+    }
+
+    public Reaction getReactionCommentById(Integer id) throws ReactionNotFoundException {
+        logger.info("Trying to find comment with id " + id);
+        Optional<Reaction> reaction = reactionRepository.findById(id);
+        if(reaction.isPresent()){
+            logger.info("Retrieving successful");
+            return reaction.get();
+        }else{
+            logger.warn("Reaction with id " + id + " not found");
+            throw new ReactionNotFoundException("Reaction with id: '" + id + "' not found");
+        }
     }
 
     public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
