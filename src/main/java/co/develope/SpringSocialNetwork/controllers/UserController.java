@@ -221,6 +221,21 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteUser(@PathVariable Integer id) {
+        try {
+            //logger.info("Getting friends of user with id " + id);
+            if (userService.deleteUser(id))
+                return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+            else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/{id}/download-profilePic", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity viewProfilePicture(@PathVariable Integer id){
         try {

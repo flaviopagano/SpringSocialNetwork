@@ -105,15 +105,17 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
-    /*public ResponseEntity deleteUser (Integer id)  {
+    public boolean deleteUser (Integer id)  {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             userRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body("user deleted");
-
+            //return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+            return true;
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }*/
+        //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return false;
+    }
 
 
     public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {

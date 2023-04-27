@@ -38,15 +38,21 @@ public class User extends BaseEntity{
 
     private String profilePicture;
 
-    @OneToMany
+    @OneToMany(
+            mappedBy = "userWhoPosts",
+            cascade = CascadeType.ALL)
     @JsonIgnore
     List<Post> posts = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(
+            mappedBy = "userWhoComments",
+            cascade = CascadeType.ALL)
     @JsonIgnore
     List<Comment> comments = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(
+            mappedBy = "userWhoReacts",
+            cascade = CascadeType.ALL)
     @JsonIgnore
     List<Reaction> reactions = new ArrayList<>();
 
