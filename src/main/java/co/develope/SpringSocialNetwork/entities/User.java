@@ -19,11 +19,6 @@ public class User extends BaseEntity{
     @Column(unique = true, nullable = false)
     private String username;
 
-    /** decommenta i due nullable = false quando avrai aggiunto i due campi alla creazione dell'user, ora come ora
-     * bloccano tutto perche creando un user non si possono assegnre quei due campi ma possiedono allo stesso
-     * tempo il constraint
-     * Vedi anche se conviene usare Date o LocalDateTime **/
-
     @Column
     private LocalDateTime dateOfBirth;
 
@@ -38,21 +33,21 @@ public class User extends BaseEntity{
 
     private String profilePicture;
 
-    @OneToMany
+    @OneToMany(mappedBy = "userWhoPosts", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Post> posts = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "userWhoComments", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Comment> comments = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "userWhoReacts", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Reaction> reactions = new ArrayList<>();
 
-    @OneToMany
+    /*@OneToMany
     @JsonIgnore
-    Set<User> friendList = new HashSet<>();
+    Set<User> friendList = new HashSet<>();*/
 
     public User(){}
 
@@ -169,12 +164,12 @@ public class User extends BaseEntity{
         this.reactions = reactions;
     }
 
-    public Set<User> getFriendList() {
+    /*public Set<User> getFriendList() {
         return friendList;
     }
 
     public void setFriendList(Set<User> friendList) {
         this.friendList = friendList;
-    }
+    }*/
 
 }

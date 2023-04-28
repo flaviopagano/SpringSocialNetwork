@@ -160,10 +160,17 @@ public class PostController {
         return postService.getAllPosts();
     }
 
-/*    @DeleteMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity deletePost(@RequestParam Integer postId){
-        return postService.deletePostById(postId);
-    } */
+        try {
+            logger.info("Trying to delete post by id");
+            postService.deletePostById(postId);
+            return ResponseEntity.status(200).body("Post deleted successfully");
+        } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
     @PutMapping("/edit-text-by-id")
     public ResponseEntity editPost(@RequestParam Integer postId, @RequestParam String text){
@@ -177,6 +184,5 @@ public class PostController {
     }
 
     //da fare edit image of the post
-
 
 }

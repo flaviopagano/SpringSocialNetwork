@@ -210,7 +210,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}/get-friends")
+    /*@GetMapping("/{id}/get-friends")
     public ResponseEntity getFriendsOfTheUser(@PathVariable Integer id) {
         try {
             logger.info("Getting friends of user with id " + id);
@@ -219,7 +219,7 @@ public class UserController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    }
+    }*/
 
     @RequestMapping(value = "/{id}/download-profilePic", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity viewProfilePicture(@PathVariable Integer id){
@@ -240,6 +240,18 @@ public class UserController {
         try {
             logger.info("User updated successfully");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateAllUser(id, userDTO));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteUserById(@PathVariable Integer id){
+        try {
+            logger.info("Deleting user");
+            userService.deleteUser(id);
+            return ResponseEntity.status(200).body("User deleted successfully");
         } catch (UserNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

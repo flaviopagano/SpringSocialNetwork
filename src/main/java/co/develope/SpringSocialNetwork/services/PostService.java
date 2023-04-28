@@ -111,18 +111,10 @@ public class PostService {
         return myPost;
     }*/
 
-    /**non funziona - come fare delete nelle many-to-many? **/
-    /*public ResponseEntity deletePostById(Integer id){
-        Optional<Post> myPost = postRepository.findById(id);
-        if(myPost.isPresent()){
-            myPost.get().getUserWhoPosts().getPosts().remove(myPost.get());
-            myPost.get().getComments().remove(myPost.get());
-            myPost.get().getReactions().remove(myPost.get());
-            postRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+    public void deletePostById(Integer id) throws PostNotFoundException {
+        Post myPost = getPostById(id);
+        logger.info("Cerco il post con id " + id + " poi lo cancello");
+        postRepository.delete(myPost);
     }
-*/
 
 }

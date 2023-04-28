@@ -105,15 +105,11 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
-    /*public ResponseEntity deleteUser (Integer id)  {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            userRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body("user deleted");
-
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }*/
+    public void deleteUser (Integer id) throws UserNotFoundException {
+        logger.info("Deleting user with id " + id);
+        User myUser = getUserById(id);
+        userRepository.delete(myUser);
+    }
 
 
     public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
