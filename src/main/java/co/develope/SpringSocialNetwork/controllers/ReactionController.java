@@ -133,14 +133,15 @@ public class ReactionController {
     @GetMapping
     public List<Reaction> getAllReactionFromPost(){
         logger.info("Getting all reactions from a post");
-        return reactionService.getAll();
+        return reactionService.getAllReactions();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
         try {
             logger.info("User want to delete reaction with id " + id);
-            return reactionService.deleteReactionById(id);
+            reactionService.deleteReactionById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
         } catch (ReactionNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

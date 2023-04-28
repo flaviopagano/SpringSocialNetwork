@@ -29,7 +29,7 @@ public class UserService {
     @Autowired
     FileStorageService fileStorageService;
 
-    public User getUserFromUserDTO(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException,
+    public User createUser(UserDTO user) throws UsernameAlreadyPresentException, EmailAlreadyPresentException,
             EmailNotValidException, PasswordNotValidException {
         logger.info("Trying to create User from DTO");
 
@@ -43,13 +43,11 @@ public class UserService {
             throw new EmailAlreadyPresentException();
         }
 
-        // Check if password contains special characters, then throw custom error
         if (!isValidPassword(user.getPassword()) || user.getPassword().contains(" ")) {
             logger.warn("Invalid Password");
-            throw new PasswordNotValidException();
+            throw new PasswordNotValidException("Deve contenere tra 8 e 15 caratteri, almeno 2 lettere e 2 numeri!");
         }
 
-        // Check if email contains special characters, then throw custom error
         if(!patternMatches(user.getEmail(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]" +
                 "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
             logger.warn("Invalid Email");
@@ -57,11 +55,18 @@ public class UserService {
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
         User userDone = new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword,
                 user.getDateOfBirth(), user.getPlaceOfBirth());
         return userRepository.save(userDone);
     }
 
+    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
+        User user = getUserById(userID);
+        String fileName = fileStorageService.upload(profilePicture, false);
+        user.setProfilePicture(fileName);
+        return userRepository.save(user);
+    }
 
     public User getUserById(Integer id) throws UserNotFoundException {
         logger.info("Trying to retrieve a user by id");
@@ -85,6 +90,20 @@ public class UserService {
             logger.warn("User with username '" + username + "' not found");
             throw new UserNotFoundException("User with id: '" + username + "' not found");
         }
+    }
+
+    /**come fare encrypt e decrypt password al meglio**/
+    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
+        User user = getUserById(id);
+        String encryptedPassword = user.getPassword();
+        String password =
+        return password;
+    }*/
+
+    public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
+        User user = getUserById(id);
+        String profilePicture = user.getProfilePicture();
+        return fileStorageService.download(profilePicture, false);
     }
 
     public List<User> getAll(){
@@ -111,27 +130,7 @@ public class UserService {
         userRepository.delete(myUser);
     }
 
-
-    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
-        User user = getUserById(userID);
-        String fileName = fileStorageService.upload(profilePicture, false);
-        user.setProfilePicture(fileName);
-        return userRepository.save(user);
-    }
-
-    public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
-        User user = getUserById(id);
-        String profilePicture = user.getProfilePicture();
-        return fileStorageService.download(profilePicture, false);
-    }
-
-    /**come fare encrypt e decrypt password al meglio**/
-    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
-        User user = getUserById(id);
-        String encryptedPassword = user.getPassword();
-        String password =
-        return password;
-    }*/
+    /** funzioni per fare check della password**/
 
     private boolean patternMatches(String text, String regexPattern) {
         return Pattern.compile(regexPattern).matcher(text).matches();

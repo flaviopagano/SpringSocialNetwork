@@ -40,23 +40,9 @@ public class ReactionService {
         Post myPost = postService.getPostById(reaction.getPostId());
         logger.info("To the post with id " + reaction.getPostId());
         Reaction reactionNew = new Reaction(myPost, myUser, reactionType);
-        myUser.getReactions().add(reactionNew);
-        myPost.getReactions().add(reactionNew);
         logger.info("User " + reaction.getUsername() + " added an " + reactionType + " reaction to the post with id " +
                 reaction.getPostId());
         return reactionRepository.save(reactionNew);
-    }
-
-    public Reaction getReactionCommentById(Integer id) throws ReactionNotFoundException {
-        logger.info("Trying to find comment with id " + id);
-        Optional<Reaction> reaction = reactionRepository.findById(id);
-        if(reaction.isPresent()){
-            logger.info("Retrieving successful");
-            return reaction.get();
-        }else{
-            logger.warn("Reaction with id " + id + " not found");
-            throw new ReactionNotFoundException("Reaction with id: '" + id + "' not found");
-        }
     }
 
     public Reaction addLovingReaction(ReactionDTO reaction) throws UserNotFoundException, PostNotFoundException{
@@ -88,37 +74,34 @@ public class ReactionService {
     }
 
     public Reaction getReactionById(Integer id) throws ReactionNotFoundException {
+        logger.info("Trying to find comment with id " + id);
         Optional<Reaction> reaction = reactionRepository.findById(id);
         if(reaction.isEmpty()){
-            logger.info("Reaction not found");
-            throw new ReactionNotFoundException("Reaction with id '" + id + "' not found");
+            logger.warn("Reaction with id " + id + " not found");
+            throw new ReactionNotFoundException("Reaction with id: '" + id + "' not found");
         }else{
+            logger.info("Retrieving successful");
             return reaction.get();
         }
     }
 
-    public List<Reaction> getAllReactionsFromPost (Integer postId) throws PostNotFoundException {
+    //metodo inutile
+    /*public List<Reaction> getAllReactionsFromPost (Integer postId) throws PostNotFoundException {
         logger.info("Trying to retrieve all reactions from post");
         Post myPost = postService.getPostById(postId);
         logger.info("Retrieving successful");
         return myPost.getReactions();
-    }
+    }*/
 
     public List<Reaction> getAllReactions(){
         return reactionRepository.findAll();
     }
 
-    public ResponseEntity deleteReactionById(Integer id) throws ReactionNotFoundException {
+    public void deleteReactionById(Integer id) throws ReactionNotFoundException {
         logger.info("User wants to delete the reaction with id " + id);
         Reaction reaction = getReactionById(id);
-        reaction.getPostToReact().getReactions().remove(reaction);
-        reaction.getUserWhoReacts().getReactions().remove(reaction);
-        reactionRepository.deleteById(id);
+        reactionRepository.delete(reaction);
         logger.info("Reaction deleted successfully");
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
     }
 
-    public List<Reaction> getAll() {
-        return reactionRepository.findAll();
-    }
 }

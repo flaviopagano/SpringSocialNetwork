@@ -3,7 +3,6 @@ package co.develope.SpringSocialNetwork.controllers;
 import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.*;
-import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody UserDTO user) {
         try {
             logger.info("User created successfully");
-            return ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserFromUserDTO(user));
+            return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
         } catch (UsernameAlreadyPresentException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
