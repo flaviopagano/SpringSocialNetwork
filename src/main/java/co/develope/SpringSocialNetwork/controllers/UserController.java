@@ -21,12 +21,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService userService;
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity createUser(@RequestBody UserDTO user) {
         try {
             logger.info("User created successfully");
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{id}/upload-profile")
+    @PostMapping("/{id}/profile-picture")
     public ResponseEntity uploadProfilePicture(@PathVariable Integer id, @RequestParam MultipartFile profilePicture) {
         try {
             logger.info("Uploading profile picture for user " + id);
@@ -58,12 +58,6 @@ public class UserController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-    }
-
-    @GetMapping
-    public List<User> getUserList() {
-        logger.info("Retrieving all users from db");
-        return userService.getAll();
     }
 
     @GetMapping("/{id}")
@@ -165,6 +159,9 @@ public class UserController {
         }
     }
 
+    /**
+     *da fare e sistemare
+     */
     /*@GetMapping("/{id}/get-password")
     public ResponseEntity getPasswordOfTheUser(@PathVariable Integer id) {
         try {
@@ -176,7 +173,6 @@ public class UserController {
         }
     }*/
 
-    //non funziona, perchè?
     @GetMapping("/{id}/get-posts")
     public ResponseEntity getPostsOfTheUser(@PathVariable Integer id) {
         try {
@@ -210,6 +206,7 @@ public class UserController {
         }
     }
 
+    //non ancora implementato
     /*@GetMapping("/{id}/get-friends")
     public ResponseEntity getFriendsOfTheUser(@PathVariable Integer id) {
         try {
@@ -221,7 +218,7 @@ public class UserController {
         }
     }*/
 
-    @RequestMapping(value = "/{id}/download-profilePic", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
+    @RequestMapping(value = "/{id}/profile-picture", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity viewProfilePicture(@PathVariable Integer id){
         try {
             logger.info("Requested profile picture for user: " + id);
@@ -235,7 +232,13 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update/{id}")
+    @GetMapping
+    public List<User> getUserList() {
+        logger.info("Retrieving all users from db");
+        return userService.getAll();
+    }
+
+    @PutMapping("/{id}")
     public ResponseEntity updateAllUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
         try {
             logger.info("User updated successfully");
@@ -246,7 +249,9 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    //mancano metodi di update dei singoli fields
+
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteUserById(@PathVariable Integer id){
         try {
             logger.info("Deleting user");

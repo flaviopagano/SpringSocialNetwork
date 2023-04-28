@@ -117,4 +117,8 @@ public class ReactionService {
         logger.info("Reaction deleted successfully");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Reaction deleted successfully");
     }
+
+    public List<Reaction> getAll() {
+        return reactionRepository.findAll();
+    }
 }

@@ -25,10 +25,7 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-    @Autowired
-    private ReactionRepository reactionRepository;
-
-    @PostMapping("/create/loving")
+    @PostMapping("/loving")
     public ResponseEntity createLovingReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Loving reaction added!");
@@ -43,7 +40,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/angry")
+    @PostMapping("/angry")
     public ResponseEntity createAngryReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Angry reaction added!");
@@ -58,7 +55,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/hate")
+    @PostMapping("/hate")
     public ResponseEntity createHateReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Hate reaction added!");
@@ -73,7 +70,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/praying")
+    @PostMapping("/praying")
     public ResponseEntity createPrayingReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Praying reaction added!");
@@ -88,7 +85,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/happy")
+    @PostMapping("/happy")
     public ResponseEntity createHappyReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Happy reaction added!");
@@ -103,7 +100,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/sad")
+    @PostMapping("/sad")
     public ResponseEntity createSadReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Sad reaction added!");
@@ -118,7 +115,7 @@ public class ReactionController {
         }
     }
 
-    @PostMapping("/create/crying")
+    @PostMapping("/crying")
     public ResponseEntity createCryingReaction (@RequestBody ReactionDTO reaction) {
         try {
             logger.info("Crying reaction added!");
@@ -133,20 +130,21 @@ public class ReactionController {
         }
     }
 
-    @GetMapping("/get-all-reactions")
+    @GetMapping
     public List<Reaction> getAllReactionFromPost(){
         logger.info("Getting all reactions from a post");
-        return reactionRepository.findAll();
+        return reactionService.getAll();
     }
 
-    @DeleteMapping("/delete-reaction/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteReactionById(@PathVariable Integer id){
-        logger.info("User want to delete reaction with id " + id);
         try {
+            logger.info("User want to delete reaction with id " + id);
             return reactionService.deleteReactionById(id);
         } catch (ReactionNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
 }
