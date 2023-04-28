@@ -55,7 +55,6 @@ public class UserService {
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-
         User userDone = new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword,
                 user.getDateOfBirth(), user.getPlaceOfBirth());
         return userRepository.save(userDone);
@@ -67,6 +66,7 @@ public class UserService {
         user.setProfilePicture(fileName);
         return userRepository.save(user);
     }
+
 
     public User getUserById(Integer id) throws UserNotFoundException {
         logger.info("Trying to retrieve a user by id");
@@ -91,14 +91,6 @@ public class UserService {
             throw new UserNotFoundException("User with id: '" + username + "' not found");
         }
     }
-
-    /**come fare encrypt e decrypt password al meglio**/
-    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
-        User user = getUserById(id);
-        String encryptedPassword = user.getPassword();
-        String password =
-        return password;
-    }*/
 
     public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
         User user = getUserById(id);
@@ -130,7 +122,15 @@ public class UserService {
         userRepository.delete(myUser);
     }
 
-    /** funzioni per fare check della password**/
+    /**come fare encrypt e decrypt password al meglio**/
+    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
+        User user = getUserById(id);
+        String encryptedPassword = user.getPassword();
+        String password =
+        return password;
+    }*/
+
+    /** metodi per controllo password e email **/
 
     private boolean patternMatches(String text, String regexPattern) {
         return Pattern.compile(regexPattern).matcher(text).matches();
