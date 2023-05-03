@@ -11,11 +11,11 @@ public class  Comment extends BaseEntity{
     @Column(nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User userWhoComments;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post postToComment;
