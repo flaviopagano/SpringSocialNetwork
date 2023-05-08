@@ -33,6 +33,19 @@ public class User extends BaseEntity{
 
     private String profilePicture;
 
+    private boolean isActive;
+
+    private String activationCode;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_ROLES",
+            joinColumns = {
+                    @JoinColumn(name = "USER_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ROLE_ID") })
+    private Set<Role> roles;
+
     @OneToMany(mappedBy = "userWhoPosts", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Post> posts = new ArrayList<>();
@@ -162,6 +175,30 @@ public class User extends BaseEntity{
 
     public void setReactions(List<Reaction> reactions) {
         this.reactions = reactions;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     /*public Set<User> getFriendList() {
