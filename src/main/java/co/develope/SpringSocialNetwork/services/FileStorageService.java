@@ -80,12 +80,10 @@ public class FileStorageService {
     public void deleteFile(String fileName, boolean isAPost) throws IOException {
         if(isAPost){
             File fileFromRepository = new File(getFileRepositoryFolderForPosts() + File.separator + fileName);
-            if(!fileFromRepository.exists()) throw new IOException("File " + fileName + " does not exists");
             fileFromRepository.delete();
         }
 
         File fileFromRepository = new File(getFileRepositoryFolderForProfilePictures() + File.separator + fileName);
-        if(!fileFromRepository.exists()) throw new IOException("File " + fileName + " does not exists");
         fileFromRepository.delete();
     }
 }

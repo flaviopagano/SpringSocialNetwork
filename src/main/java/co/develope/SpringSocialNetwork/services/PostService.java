@@ -101,7 +101,7 @@ public class PostService {
         String newPostImage = fileStorageService.upload(image,true);
         logger.info("Image uploaded");
         myPost.setImages(newPostImage);
-        return myPost;
+        return postRepository.save(myPost);
     }
 
     public void deletePostById(Integer id) throws PostNotFoundException {
