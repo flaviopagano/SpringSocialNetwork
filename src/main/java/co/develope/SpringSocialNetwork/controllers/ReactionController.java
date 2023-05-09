@@ -133,6 +133,7 @@ public class ReactionController {
     @GetMapping("/{id}")
     public ResponseEntity getAllReactionByReactionType(@PathVariable Integer id, @RequestParam ReactionType reactionType){
         try {
+            logger.info("Getting all reactions from a post by type");
             return ResponseEntity.status(200).body(reactionService.getAllReactionByReactionType(id, reactionType));
         } catch (ReactionNotFoundException e) {
             logger.warn(e.getMessage());
