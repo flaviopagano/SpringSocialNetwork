@@ -5,7 +5,6 @@ import co.develope.SpringSocialNetwork.entities.DTO.CommentDTO;
 import co.develope.SpringSocialNetwork.exceptions.CommentNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
-import co.develope.SpringSocialNetwork.repositories.CommentRepository;
 import co.develope.SpringSocialNetwork.services.CommentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +139,8 @@ public class CommentController {
     public ResponseEntity deleteSingleComment(@PathVariable Integer id){
         try {
             logger.info("Deleting comment");
-            return commentService.deleteCommentById(id);
+            commentService.deleteCommentById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

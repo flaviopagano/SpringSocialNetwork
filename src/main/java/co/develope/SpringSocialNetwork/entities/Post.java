@@ -13,7 +13,7 @@ public class Post extends BaseEntity {
 
   private String image;
 
-  @ManyToOne//(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "user_id")
   private User userWhoPosts;
 

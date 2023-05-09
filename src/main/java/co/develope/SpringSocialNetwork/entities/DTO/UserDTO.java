@@ -11,25 +11,15 @@ public class UserDTO {
     private String username;
     private String email;
     private String password;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDateTime dateOfBirth;
-    private String placeOfBirth;
-    private String profilePictureFilename;
-
-
 
     public UserDTO(){}
 
-    public UserDTO(String name, String surname, String username, String email, String password,
-                   LocalDateTime dateOfBirth, String placeOfBirth,String profilePicture) {
+    public UserDTO(String name, String surname, String username, String email, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.dateOfBirth = dateOfBirth;
-        this.placeOfBirth = placeOfBirth;
-        this.profilePictureFilename = profilePicture;
     }
 
     public String getName() {
@@ -72,27 +62,4 @@ public class UserDTO {
         this.password = password;
     }
 
-    public LocalDateTime getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getPlaceOfBirth() {
-        return placeOfBirth;
-    }
-
-    public void setPlaceOfBirth(String placeOfBirth) {
-        this.placeOfBirth = placeOfBirth;
-    }
-
-    public String getProfilePicture() {
-        return profilePictureFilename;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePictureFilename = profilePicture;
-    }
 }

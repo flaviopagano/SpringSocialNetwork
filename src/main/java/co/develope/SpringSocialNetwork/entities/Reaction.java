@@ -13,12 +13,12 @@ public class Reaction extends BaseEntity{
     @Column(nullable = false)
     private ReactionType reactionType;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post postToReact;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User userWhoReacts;
 

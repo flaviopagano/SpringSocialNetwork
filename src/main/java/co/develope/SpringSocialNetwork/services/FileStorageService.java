@@ -11,8 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -79,4 +77,15 @@ public class FileStorageService {
 
     }
 
+    public void deleteFile(String fileName, boolean isAPost) throws IOException {
+        if(isAPost){
+            File fileFromRepository = new File(getFileRepositoryFolderForPosts() + File.separator + fileName);
+            if(!fileFromRepository.exists()) throw new IOException("File " + fileName + " does not exists");
+            fileFromRepository.delete();
+        }
+
+        File fileFromRepository = new File(getFileRepositoryFolderForProfilePictures() + File.separator + fileName);
+        if(!fileFromRepository.exists()) throw new IOException("File " + fileName + " does not exists");
+        fileFromRepository.delete();
+    }
 }

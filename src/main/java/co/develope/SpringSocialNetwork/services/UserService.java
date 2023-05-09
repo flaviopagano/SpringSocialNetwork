@@ -40,7 +40,7 @@ public class UserService {
 
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
             logger.warn("Email: '" + user.getEmail() + "' already present");
-            throw new EmailAlreadyPresentException();
+            throw new EmailAlreadyPresentException("Email: '" + "' already present");
         }
 
         if (!isValidPassword(user.getPassword()) || user.getPassword().contains(" ")) {
@@ -54,9 +54,7 @@ public class UserService {
             throw new EmailNotValidException();
         }
 
-        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        User userDone = new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), hashedPassword,
-                user.getDateOfBirth(), user.getPlaceOfBirth());
+        User userDone = new User(user.getName(), user.getSurname(), user.getUsername(), user.getEmail());
         return userRepository.save(userDone);
     }
 
@@ -81,14 +79,14 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) throws UserNotFoundException {
-        logger.info("Trying to retrieve a user by id");
+        logger.info("Trying to retrieve a user by username");
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             logger.info("Retrieving successful");
             return optionalUser.get();
         } else {
             logger.warn("User with username '" + username + "' not found");
-            throw new UserNotFoundException("User with id: '" + username + "' not found");
+            throw new UserNotFoundException("User with username: '" + username + "' not found");
         }
     }
 
@@ -121,14 +119,6 @@ public class UserService {
         User myUser = getUserById(id);
         userRepository.delete(myUser);
     }
-
-    /**come fare encrypt e decrypt password al meglio**/
-    /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
-        User user = getUserById(id);
-        String encryptedPassword = user.getPassword();
-        String password =
-        return password;
-    }*/
 
     /** metodi per controllo password e email **/
 

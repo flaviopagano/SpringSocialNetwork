@@ -51,30 +51,13 @@ public class User extends BaseEntity{
 
     public User(){}
 
-    public User(String name, String surname, String username, String email, String password,
-                LocalDateTime dateOfBirth, String placeOfBirth) {
+    public User(String name, String surname, String username, String email) {
         super();
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
-        this.password = password;
-        this.dateOfBirth = dateOfBirth;
-        this.placeOfBirth = placeOfBirth;
-
     }
-
-    /*public User(String id, String name, String surname) {
-        super.setId(id);
-        this.name = name;
-        this.surname = surname;
-    }
-
-    public User(String nickname, String email, String password) {
-        this.username = nickname;
-        this.email = email;
-        this.password = password;
-    }*/
 
     public String getName() {
         return name;

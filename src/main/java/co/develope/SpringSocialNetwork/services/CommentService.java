@@ -8,13 +8,9 @@ import co.develope.SpringSocialNetwork.exceptions.CommentNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.CommentRepository;
-import co.develope.SpringSocialNetwork.repositories.PostRepository;
-import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,12 +81,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public ResponseEntity deleteCommentById(Integer id) throws CommentNotFoundException {
+    public void deleteCommentById(Integer id) throws CommentNotFoundException {
         logger.info("User wants to delete the comment with id " + id);
         Comment myComment = getCommentById(id);
         commentRepository.delete(myComment);
         logger.info("Comment deleted successfully");
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
     }
 
 }

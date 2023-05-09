@@ -70,11 +70,12 @@ public class PostService {
         return myUser.getPosts();
     }*/
 
-    public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
+    /*public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
         logger.info("Retrieving the image from post with id " + id);
         Post myPost = getPostById(id);
+        String extension = FilenameUtils.getExtension(myPost.getImages());
         return fileStorageService.download(myPost.getImages(), true);
-    }
+    }*/
 
     public List<Post> getAllPosts(){
          logger.info("Retrieving all the posts from database");
@@ -92,23 +93,20 @@ public class PostService {
         return myPost;
     }
 
-    /**
-     * ancora da fare e capire bene come farlo
-     */
-    /*public Post editPostImageById(Integer postId, MultipartFile file) throws PostNotFoundException {
+    public Post editPostImageById(Integer postId, MultipartFile image) throws PostNotFoundException, IOException {
         Post myPost = getPostById(postId);
         logger.info("The post to edit with id " + postId + " has been found");
-        myPost.setImages();
-        myPost.setUpdateDate(LocalDateTime.now());
-        logger.info("The post with id " + postId + " has been edited");
-        postRepository.save(myPost);
-        logger.info("The edit of post " + postId + " has been saved");
+        fileStorageService.deleteFile(myPost.getImages(), true);
+        logger.info("Uploading image");
+        String newPostImage = fileStorageService.upload(image,true);
+        logger.info("Image uploaded");
+        myPost.setImages(newPostImage);
         return myPost;
-    }*/
+    }
 
     public void deletePostById(Integer id) throws PostNotFoundException {
         Post myPost = getPostById(id);
-        logger.info("Cerco il post con id " + id + " poi lo cancello");
+        logger.info("CSearching post with id " + id + " then delete it");
         postRepository.delete(myPost);
     }
 

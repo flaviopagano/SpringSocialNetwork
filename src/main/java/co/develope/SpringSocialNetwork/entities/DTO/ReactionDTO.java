@@ -1,21 +1,12 @@
 package co.develope.SpringSocialNetwork.entities.DTO;
 
-import co.develope.SpringSocialNetwork.enums.ReactionType;
-
 public class ReactionDTO {
 
-    //private ReactionType reactionType;
     private String username;
     private int postId;
 
     public ReactionDTO() {
     }
-
-    /*public ReactionDTO(ReactionType reactionType, String username, int postId) {
-        this.reactionType = reactionType;
-        this.username = username;
-        this.postId = postId;
-    }*/
 
     public ReactionDTO(String username, int postId){
         this.username = username;
@@ -37,4 +28,5 @@ public class ReactionDTO {
     public void setPostId(int postId) {
         this.postId = postId;
     }
+
 }
