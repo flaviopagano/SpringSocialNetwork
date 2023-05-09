@@ -1,16 +1,10 @@
 package co.develope.SpringSocialNetwork.entities;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 public class BaseEntity {
-    @Id
-    @GeneratedValue
-    private int id;
     @Column(nullable = false)
     private LocalDateTime publicationDate;
 
@@ -18,14 +12,6 @@ public class BaseEntity {
 
     public BaseEntity(){
         this.publicationDate = LocalDateTime.now();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public LocalDateTime getPublicationDate() {

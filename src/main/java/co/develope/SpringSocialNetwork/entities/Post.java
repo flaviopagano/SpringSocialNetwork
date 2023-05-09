@@ -9,6 +9,10 @@ import java.util.List;
 @Entity
 @Table(name = "posts")
 public class Post extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
   private String text;
 
   private String image;
@@ -38,7 +42,9 @@ public class Post extends BaseEntity {
       this.userWhoPosts = userWhoPosts;
       this.image = images;
   }
-
+  public int getId() {
+      return id;
+  }
 
   public String getText() {
       return text;

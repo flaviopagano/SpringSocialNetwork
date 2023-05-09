@@ -3,12 +3,16 @@ package co.develope.SpringSocialNetwork.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(nullable = false)
     private String name;
@@ -20,7 +24,7 @@ public class User extends BaseEntity{
     private String username;
 
     @Column
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column
     private String placeOfBirth;
@@ -28,7 +32,7 @@ public class User extends BaseEntity{
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     private String profilePicture;
@@ -57,6 +61,10 @@ public class User extends BaseEntity{
         this.surname = surname;
         this.username = username;
         this.email = email;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -95,11 +103,11 @@ public class User extends BaseEntity{
         return password;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

@@ -8,6 +8,10 @@ import javax.persistence.*;
 @Table(name = "comments")
 public class  Comment extends BaseEntity{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Column(nullable = false)
     private String description;
 
@@ -27,6 +31,10 @@ public class  Comment extends BaseEntity{
         this.description = description;
         this.userWhoComments = userWhoComments;
         this.postToComment = postToComment;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getDescription() {

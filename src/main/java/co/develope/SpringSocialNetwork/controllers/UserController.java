@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -245,6 +246,108 @@ public class UserController {
         } catch (UserNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-name")
+    public ResponseEntity updateUserName(@RequestParam String name, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserName(id, name));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-surname")
+    public ResponseEntity updateUserSurname(@RequestParam String surname, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserSurname(id, surname));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-username")
+    public ResponseEntity updateUserUsername(@RequestParam String username, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserUsername(id, username));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (UsernameAlreadyPresentException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-date-of-birth")
+    public ResponseEntity updateUserDateOfBirth(@RequestParam LocalDate date, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserDateOfBirth(id, date));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-place-of-birth")
+    public ResponseEntity updateUserPlaceOfBirth(@RequestParam String placeOfBirth, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserPlaceOfBirth(id, placeOfBirth));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-email")
+    public ResponseEntity updateUserEmail(@RequestParam String email, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserEmail(id,email));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (EmailAlreadyPresentException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (EmailNotValidException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit-password")
+    public ResponseEntity updateUserPassword(@RequestParam String password, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateUserPassword(id, password));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (PasswordNotValidException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PutMapping("/{id}/edit-profile-picture")
+    public ResponseEntity updateProfilePicture(@RequestPart MultipartFile file, @PathVariable Integer id) {
+        try {
+            logger.info("User updated successfully");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.updateProfilePicture(id, file));
+        } catch (UserNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

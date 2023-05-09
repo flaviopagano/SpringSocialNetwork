@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Table(name = "reactions")
 public class Reaction extends BaseEntity{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReactionType reactionType;
@@ -30,6 +34,10 @@ public class Reaction extends BaseEntity{
         this.postToReact = post;
         this.userWhoReacts = user;
         this.reactionType = reactionType;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Post getPostToReact() {
