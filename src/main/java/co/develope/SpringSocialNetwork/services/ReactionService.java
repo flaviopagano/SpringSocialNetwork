@@ -91,6 +91,19 @@ public class ReactionService {
         return myPost.getReactions();
     }*/
 
+    public List<Reaction> getAllReactionByReactionType(Integer postId, ReactionType reactionType) throws ReactionNotFoundException, PostNotFoundException {
+        Post post = postService.getPostById(postId);
+        logger.info("Retrieving post successful");
+        List<Reaction> reaction = reactionRepository.findReactionByReactionType(reactionType);
+        if(!reaction.isEmpty()) {
+            logger.info("Retrieving reaction successful");
+            return reaction;
+        } else {
+            logger.warn("Reaction not found");
+            throw new ReactionNotFoundException("Reaction not found");
+        }
+    }
+
     public List<Reaction> getAllReactions(){
         return reactionRepository.findAll();
     }

@@ -2,6 +2,7 @@ package co.develope.SpringSocialNetwork.controllers;
 
 import co.develope.SpringSocialNetwork.entities.DTO.ReactionDTO;
 import co.develope.SpringSocialNetwork.entities.Reaction;
+import co.develope.SpringSocialNetwork.enums.ReactionType;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.ReactionNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
@@ -124,6 +125,19 @@ public class ReactionController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }catch(PostNotFoundException e){
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getAllReactionByReactionType(@PathVariable Integer id, @RequestParam ReactionType reactionType){
+        try {
+            return ResponseEntity.status(200).body(reactionService.getAllReactionByReactionType(id, reactionType));
+        } catch (ReactionNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
