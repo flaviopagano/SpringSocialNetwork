@@ -41,8 +41,6 @@ public class CommentService {
         Post myPost = postService.getPostById(comment.getPostId());
         logger.info("To the post with id " + comment.getPostId());
         Comment comm = new Comment(comment.getText(), myUser, myPost);
-        myUser.getComments().add(comm);
-        myPost.getComments().add(comm);
         logger.info("User " + comment.getUsername() + " added a comment to the post with id " + comment.getPostId());
         return commentRepository.save(comm);
     }
@@ -64,7 +62,8 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public List<Comment> getAllCommentsFromUser(Integer userId) throws UserNotFoundException {
+    //metodo inutili
+    /*public List<Comment> getAllCommentsFromUser(Integer userId) throws UserNotFoundException {
         logger.info("Trying to retrieve all comments from user with id " + userId);
         User myUser = userService.getUserById(userId);
         logger.info("Retrieving successful");
@@ -76,7 +75,7 @@ public class CommentService {
         Post myPost = postService.getPostById(postId);
         logger.info("Retrieving successful");
         return myPost.getComments();
-    }
+    }*/
 
     public Comment updateComment(Integer id, String text) throws CommentNotFoundException {
         logger.info("User wants to update the comment with id " + id);
@@ -89,9 +88,7 @@ public class CommentService {
     public ResponseEntity deleteCommentById(Integer id) throws CommentNotFoundException {
         logger.info("User wants to delete the comment with id " + id);
         Comment myComment = getCommentById(id);
-        myComment.getPostToComment().getComments().remove(myComment);
-        myComment.getUserWhoComments().getComments().remove(myComment);
-        commentRepository.deleteById(id);
+        commentRepository.delete(myComment);
         logger.info("Comment deleted successfully");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
     }

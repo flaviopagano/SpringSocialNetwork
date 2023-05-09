@@ -13,15 +13,15 @@ public class Post extends BaseEntity {
 
   private String image;
 
-  @ManyToOne
+  @ManyToOne//(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User userWhoPosts;
 
-  @OneToMany
+  @OneToMany(mappedBy = "postToComment", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<Comment> comments = new ArrayList<>();
 
-  @OneToMany
+  @OneToMany(mappedBy = "postToReact", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<Reaction> reactions = new ArrayList<>();
 

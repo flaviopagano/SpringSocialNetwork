@@ -22,12 +22,12 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
 
+    Logger logger = LoggerFactory.getLogger(PostController.class);
+
     @Autowired
     PostService postService;
 
-    Logger logger = LoggerFactory.getLogger(PostController.class);
-
-     @PostMapping("/create")
+     @PostMapping
      public ResponseEntity createPost(@RequestBody PostDTO postDTO){
          try {
              logger.info("Creating post");
@@ -38,7 +38,7 @@ public class PostController {
          }
      }
 
-    @PostMapping(value = "/create-with-img", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/with-image", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity createPostWithIMG(@RequestPart PostDTO postDTO, @RequestPart MultipartFile image){
         try {
             logger.info("Creating a post with one image");
@@ -52,33 +52,33 @@ public class PostController {
         }
     }
 
-    @GetMapping("/get-post-by-id")
-    public ResponseEntity getPostById(@RequestParam Integer postId){
+    @GetMapping("/{id}")
+    public ResponseEntity getPostById(@PathVariable Integer id){
         try {
-            logger.info("Getting post with id " + postId);
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId));
+            logger.info("Getting post with id " + id);
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(id));
         } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @GetMapping("/get-post-text-by-id")
-    public ResponseEntity getPostTextById(@RequestParam Integer postId){
+    @GetMapping("/{id}/get-text")
+    public ResponseEntity getPostTextById(@PathVariable Integer id){
         try {
-            logger.info("Getting text of the post with id " + postId);
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId).getText());
+            logger.info("Getting text of the post with id " + id);
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(id).getText());
         } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @RequestMapping(value = "/get-post-image-by-id", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity getPostImageById(@RequestParam Integer postId){
+    @RequestMapping(value = "/{id}/get-image", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity getPostImageById(@PathVariable Integer id){
         try {
-            logger.info("Getting image of the post with id " + postId);
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostImageById(postId));
+            logger.info("Getting image of the post with id " + id);
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostImageById(id));
         } catch (PostNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -143,7 +143,8 @@ public class PostController {
         }
     }
 
-    @GetMapping("/get-all-by-user-id")
+    //metodo inutile, più facile farlo dall'user
+    /*@GetMapping("/get-all-by-user-id")
     public ResponseEntity getAllPostsFromUser(@RequestParam Integer userId){
         try {
             logger.info("Getting all posts from user with id: " + userId);
@@ -152,24 +153,19 @@ public class PostController {
             logger.warn(e.getMessage());
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    @GetMapping("/get-all")
+    @GetMapping
     public List<Post> getPostById(){
         logger.info("Getting all posts");
         return postService.getAllPosts();
     }
 
-/*    @DeleteMapping("/delete")
-    public ResponseEntity deletePost(@RequestParam Integer postId){
-        return postService.deletePostById(postId);
-    } */
-
-    @PutMapping("/edit-text-by-id")
-    public ResponseEntity editPost(@RequestParam Integer postId, @RequestParam String text){
+    @PutMapping("/{id}/edit-text")
+    public ResponseEntity editPost(@PathVariable Integer id, @RequestParam String text){
         try{
         logger.info("Editing post");
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(postService.editPostTextById(postId,text));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(postService.editPostTextById(id,text));
         }catch (PostNotFoundException e){
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -178,5 +174,16 @@ public class PostController {
 
     //da fare edit image of the post
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePost(@PathVariable Integer id){
+        try {
+            logger.info("Trying to delete post by id");
+            postService.deletePostById(id);
+            return ResponseEntity.status(200).body("Post deleted successfully");
+        } catch (PostNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 }

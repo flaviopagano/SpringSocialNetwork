@@ -25,7 +25,7 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity createComment(@RequestBody CommentDTO comment){
         try {
             logger.info("Creating comment");
@@ -40,7 +40,7 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/get-comment/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getCommentById(@PathVariable Integer id){
         try {
             logger.info("Getting comment by id");
@@ -51,7 +51,8 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/get-comment-from-user")
+    //metodo inutile, più facile farlo dall'user
+    /*@GetMapping("/get-comment-from-user")
     public ResponseEntity getAllCommentsFromAUser(@RequestParam Integer userId){
         try {
             logger.info("Getting all comments from user");
@@ -60,9 +61,10 @@ public class CommentController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    }
+    }*/
 
-    @GetMapping("/get-comment-from-post")
+    //metodo inutile, più facile farlo dal post
+    /*@GetMapping("/get-comment-from-post")
     public ResponseEntity getAllCommentsFromAPost(@RequestParam Integer postId){
         try {
             logger.info("Getting all comments from post");
@@ -71,34 +73,12 @@ public class CommentController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    }
+    }*/
 
     @GetMapping
     public List<Comment> getAllComments(){
         logger.info("Getting all comments");
         return commentService.getAll();
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity updateComment(@PathVariable Integer id, @RequestParam String text){
-        try {
-            logger.info("Updating comment");
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(commentService.updateComment(id, text));
-        } catch (CommentNotFoundException e) {
-            logger.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteSingleComment(@PathVariable Integer id){
-        try {
-            logger.info("Deleting comment");
-            return commentService.deleteCommentById(id);
-        } catch (CommentNotFoundException e) {
-            logger.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/{id}/get-publication-date")
@@ -139,6 +119,28 @@ public class CommentController {
         try {
             logger.info("Getting post commented");
             return ResponseEntity.status(HttpStatus.FOUND).body(commentService.getCommentById(id).getPostToComment());
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updateComment(@PathVariable Integer id, @RequestParam String text){
+        try {
+            logger.info("Updating comment");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(commentService.updateComment(id, text));
+        } catch (CommentNotFoundException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteSingleComment(@PathVariable Integer id){
+        try {
+            logger.info("Deleting comment");
+            return commentService.deleteCommentById(id);
         } catch (CommentNotFoundException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

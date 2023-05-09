@@ -6,12 +6,9 @@ import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.exceptions.PostNotFoundException;
 import co.develope.SpringSocialNetwork.exceptions.UserNotFoundException;
 import co.develope.SpringSocialNetwork.repositories.PostRepository;
-import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +20,9 @@ import java.util.Optional;
 
 @Service
 public class PostService {
+
+    Logger logger = LoggerFactory.getLogger(PostService.class);
+
     @Autowired
     PostRepository postRepository;
 
@@ -32,16 +32,11 @@ public class PostService {
     @Autowired
     FileStorageService fileStorageService;
 
-
-    Logger logger = LoggerFactory.getLogger(PostService.class);
-
-
      public Post createPost(PostDTO postDTO) throws UserNotFoundException {
          logger.info(postDTO.getUsername() + " is trying to create a post");
          User myUser = userService.getUserByUsername(postDTO.getUsername());
          logger.info(postDTO.getUsername() + " has created a post");
-         Post post = new Post(postDTO.getText(),myUser);
-         myUser.getPosts().add(post);
+         Post post = new Post(postDTO.getText(), myUser);
          logger.info("Saving post in the database");
          return postRepository.save(post);
      }
@@ -54,7 +49,6 @@ public class PostService {
          logger.info("Image uploaded");
          Post post = new Post(postDTO.getText(), myUser, postImage);
          logger.info("Post created");
-         myUser.getPosts().add(post);
          return postRepository.save(post);
      }
 
@@ -69,11 +63,12 @@ public class PostService {
         }
     }
 
-    public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
+    //metodo inutile
+    /*public List<Post> getAllPostsFromUserId(Integer userId) throws UserNotFoundException {
         logger.info("Retrieving all posts from user with id " + userId);
         User myUser = userService.getUserById(userId);
         return myUser.getPosts();
-    }
+    }*/
 
     public byte[] getPostImageById(Integer id) throws PostNotFoundException, IOException {
         logger.info("Retrieving the image from post with id " + id);
@@ -111,18 +106,10 @@ public class PostService {
         return myPost;
     }*/
 
-    /**non funziona - come fare delete nelle many-to-many? **/
-    /*public ResponseEntity deletePostById(Integer id){
-        Optional<Post> myPost = postRepository.findById(id);
-        if(myPost.isPresent()){
-            myPost.get().getUserWhoPosts().getPosts().remove(myPost.get());
-            myPost.get().getComments().remove(myPost.get());
-            myPost.get().getReactions().remove(myPost.get());
-            postRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Comment deleted successfully");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+    public void deletePostById(Integer id) throws PostNotFoundException {
+        Post myPost = getPostById(id);
+        logger.info("Cerco il post con id " + id + " poi lo cancello");
+        postRepository.delete(myPost);
     }
-*/
 
 }
