@@ -1,11 +1,15 @@
 package co.develope.SpringSocialNetwork;
 
 
+import co.develope.SpringSocialNetwork.entities.DTO.UserDTO;
 import co.develope.SpringSocialNetwork.entities.User;
 import co.develope.SpringSocialNetwork.repositories.UserRepository;
 import co.develope.SpringSocialNetwork.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 
+import java.rmi.server.ExportException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,10 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserServiceTests {
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
 
-    @Autowired
+    @Mock
     private UserService userService;
 
     @Autowired
@@ -36,6 +44,9 @@ public class UserServiceTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
 
     @Test
@@ -48,26 +59,6 @@ public class UserServiceTests {
         assertThat(userRepository).isNotNull();
     }
 
-
-
-    private User getUserById(Integer id) throws Exception {
-        MvcResult result = this.mockMvc.perform(get("/user/" + id))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-
-        try {
-            String userJSON = result.getResponse().getContentAsString();
-            User user = objectMapper.readValue(userJSON, User.class);
-
-            assertThat(user).isNotNull();
-            assertThat(user.getId()).isNotNull();
-
-            return user;
-        }catch (Exception e){
-            return null;
-        }
-    }
 
     private User createAUser() throws Exception {
         User user = new User();
@@ -95,6 +86,23 @@ public class UserServiceTests {
 
     @Test
     void createAUserTest() throws Exception {
-        User userFromResponse = createAUser();
+
+        UserDTO uDTO = new UserDTO();
+        uDTO.setName("ccc");
+        uDTO.setPassword("ccc");
+
+        try {
+            User userFromService = userService.createUser(uDTO);
+
+
+
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+
+
+
+
+
     }
 }

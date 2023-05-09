@@ -60,12 +60,7 @@ public class UserService {
         return userRepository.save(userDone);
     }
 
-    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
-        User user = getUserById(userID);
-        String fileName = fileStorageService.upload(profilePicture, false);
-        user.setProfilePicture(fileName);
-        return userRepository.save(user);
-    }
+
 
 
     public User getUserById(Integer id) throws UserNotFoundException {
@@ -98,6 +93,11 @@ public class UserService {
         return fileStorageService.download(profilePicture, false);
     }
 
+//    public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
+//        User user = getUserById(id);
+//        String profilePicture = user.getProfilePicture();
+//        return fileStorageService.download(profilePicture, false);
+
     public List<User> getAll(){
         logger.info("Retrieving all users from database");
         return userRepository.findAll();
@@ -116,17 +116,7 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
-    public boolean deleteUser (Integer id)  {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            userRepository.deleteById(id);
-            //return ResponseEntity.status(HttpStatus.OK).body("user deleted");
-            return true;
-        }
-        //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        return false;
-    }
 
 
     public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
@@ -136,15 +126,31 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public byte[] getUserProfilePicture(Integer id) throws UserNotFoundException, IOException {
-        User user = getUserById(id);
-        String profilePicture = user.getProfilePicture();
-        return fileStorageService.download(profilePicture, false);
+//    public User uploadProfilePicture(Integer userID, MultipartFile profilePicture) throws UserNotFoundException, IOException {
+//        User user = getUserById(userID);
+//        String fileName = fileStorageService.upload(profilePicture, false);
+//        user.setProfilePicture(fileName);
+//        return userRepository.save(user);
+//    }
+
+
     public void deleteUser (Integer id) throws UserNotFoundException {
         logger.info("Deleting user with id " + id);
         User myUser = getUserById(id);
         userRepository.delete(myUser);
     }
+
+//    public boolean deleteUser (Integer id)  {
+//        Optional<User> optionalUser = userRepository.findById(id);
+//        if (optionalUser.isPresent()) {
+//            userRepository.deleteById(id);
+//            //return ResponseEntity.status(HttpStatus.OK).body("user deleted");
+//            return true;
+//        }
+//        //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//
+//        return false;
+//    }
 
     /**come fare encrypt e decrypt password al meglio**/
     /*public String getAndDecryptPassword(Integer id) throws UserNotFoundException {
